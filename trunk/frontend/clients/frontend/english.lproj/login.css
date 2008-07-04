@@ -1,0 +1,41 @@
+/*## connection ##*/
+
+div#connection_data {
+    padding-top: 100px;
+}
+div#connection_data div.group {
+    padding: 5px;
+    clear: both;
+}
+div#connection_data div.group h4 {
+    font-size: 1.3em;
+    line-height: 1.4em;
+    font-weight: normal;
+    margin-bottom: 10px;
+    padding-left: 275px;
+}
+div#connection_data div.group span.input_label {
+    display: block;
+    height: 16px;
+    margin: 5px 0px 16px;
+}
+div#connection_data div.group input#submit {
+    margin-left: 430px;
+}
+div#connection_data div.group div.col1 {
+    text-align: right;
+    width: 300px;
+    float: left;
+}
+div#connection_data div.group div.col2 {
+    text-align: left;
+    float: left;
+}
+div#connection_data div.group div.col2 input {
+    width: 150px;
+    display: block;
+    margin: 5px 20px 15px;
+}
+div#connection_data div.group a.sc-button-view {
+    margin-left: 405px;
+}

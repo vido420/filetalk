@@ -1,0 +1,122 @@
+/*## chat ##*/
+
+div#chat_main {
+    width: 488px;
+    height: 334px;
+    float: left;
+    margin-right: 21px;
+    line-height: 1.5em;
+}
+div#chat_main div#chat_history {
+    border: 1px solid #d4d4d4;
+    height: 304px;
+    width: 488px;
+    overflow: auto;
+}
+div#chat_main div#chat_history div.alert {
+    text-align: center;
+    clear: both;
+    color: #979797;
+}
+div#chat_main div#chat_history div.username {
+    clear: both;
+    float: left;
+    width: 104px;
+}
+div#chat_main div#chat_history div.usermessage {
+    float: left;
+    width: 369px;
+}
+div#chat_main div#chat_message {
+    padding-top: 5px;
+}
+div#chat_main div#chat_message input.new_message {
+    width: 399px;
+    margin-right: 5px;
+}
+div#content .admin {
+    color: #AA101F;
+}
+div#chat_users {
+    width: 169px;
+    height: 334px;
+    border: 1px solid #d4d4d4;
+    float: left;
+    overflow: auto;
+}
+div#chat_users li {
+    padding: 5px 0px 5px 25px;
+    height: 1em;
+    clear: left;
+    background-image: url(/images/reguser.png);
+    background-repeat: no-repeat;
+}
+div#chat_users li.admin {
+    background-image: url(/images/adminuser.png);
+}
+div#chat_users li:hover, div#chat_users li.odd:hover {
+    background-color: #C7D3E9;
+}
+div#chat_users li.odd{
+    background-color: #EBEBEB;
+}
+div#chat_users li.selected{
+    background-color: #C7D3E9;
+}
+
+/******** Tools ********/
+
+div.tools {
+    clear: both;
+}
+div.tools ul {
+    height: 53px;
+    list-style: none;
+    margin: 0px 112px;
+}
+div.tools ul li {
+    display: block;
+    float: left;
+    padding-right: 15px;
+}
+
+div.tools ul li div a {
+    text-decoration: none;
+    display: block;
+    background-repeat: no-repeat;
+    background-position: 2px 8px;
+    padding-top: 15px;
+    padding-left: 36px;
+    height: 28px;
+    color: #000;
+}
+div.tools ul li:hover {
+    background-image: url(/images/hover.png);
+}
+div.tools ul li#tool_upload div a {
+    background-image: url(/images/upload.png);
+}
+div.tools ul li#tool_download div a {
+    background-image: url(/images/download.png);
+}
+div.tools ul li#tool_info div a {
+    background-image: url(/images/info.png);
+}
+div.tools ul li#tool_search div a {
+    background-image: url(/images/search.png);
+}
+div.tools ul li#tool_refresh div a {
+    background-image: url(/images/refresh.png);
+}
+div.tools ul li#tool_sendpm div a {
+    background-image: url(/images/sendpm.png);
+}
+div.tools ul li#tool_privatechat div a {
+    background-image: url(/images/privatechat.png);
+}
+div.tools ul li#tool_userinfo div a {
+    background-image: url(/images/userinfo.png);
+}
+div.tools ul li#tool_changename div a {
+    background-image: url(/images/changename.png);
+}
