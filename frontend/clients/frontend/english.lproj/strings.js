@@ -9,9 +9,12 @@
 // localized string added to this file!
 //
 Object.extend(String.English,{
-  // "_String Key": "Localized String"
-  "Login_Account_Details": "Account Details",
-  "Login_Name": "Login",
-  "Login_Password": "Password",
-  "Login_Button": "Login",
+	// "_String Key": "Localized String"
+	"Login_Account_Details": "Account Details",
+	"Login_Name": "Login",
+	"Login_Password": "Password",
+	"Login_Button": "Login",
+
+	"Chat_Enter": "Enter Message",
+	"Chat_Send": "Send",
 }) ;

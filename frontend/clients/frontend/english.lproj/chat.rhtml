@@ -1,2 +1,28 @@
 <% view :chatView do %>
+<div id="chat_main">
+	<div id="chat_history"></div>
+	<div id="chat_message">
+		<p>
+			<%= text_field_view :outlet => :chatMessage, :class => 'new_message', :hint => loc(%(Chat_Enter)) %>
+			<%= button_view :outlet => :sendButton, :class => 'send_button',
+						:label => loc(%(Chat_Send)), :default => true,
+						:enabled => true, :action => 'Frontend.chatController.send' %>
+		</p>
+	</div>
+</div>
+<div id="chat_users">
+	<ul>
+		<li class="username color1">Myrd</li>
+		<li class="username odd color1">Doobie</li>
+		<li class="username color1">Death's Avatar</li>
+	</ul>	
+</div>
+<div class="tools">
+	<ul>
+		<li id="tool_sendpm"><div><a href="#">Send PM</a></div></li>
+		<li id="tool_privatechat"><div><a href="#">Private Chat</a></div></li>
+		<li id="tool_userinfo"><div><a href="#">User Info</a></div></li>
+		<li id="tool_changename"><div><a href="#">Change Name</a></div></li>
+	</ul>
+</div>
 <% end %>

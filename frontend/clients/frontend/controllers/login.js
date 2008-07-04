@@ -21,6 +21,22 @@ Frontend.loginController = SC.Object.create(
 	//	alert(SC.page.getPath('loginForm.loginName.value') + '/' +
 	//		  SC.page.getPath('loginForm.loginPassword.value'));
 		SC.page.get('loginProgresDialog').set('isVisible', YES);
-		// myContainerView.set('content', otherView);
+		/*
+		Blah.request = new Ajax.Request( '/backend/login', {
+			method: 'POST',
+			parameters: {
+				name: SC.page.getPath('loginForm.loginName.value'),
+				pass: SC.page.getPath('loginForm.loginPassword.value'),
+			},
+			evalJS: false,
+			evalJSON: false,
+			onSuccess: function(response) {
+				alert("ABC");
+		      },
+		      onFailure: function() {
+		        alert("DEF");
+		      }
+		    });
+		*/
 	},
 }) ;
