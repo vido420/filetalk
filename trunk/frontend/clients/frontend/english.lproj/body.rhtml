@@ -1,0 +1,37 @@
+<% content_for('body') do %>
+<div id="container">
+	<div id="navigation">
+		<ul>
+			<li id="chat" class="back"><div><a href="chat.html">Chat</a></div></li>
+			<li id="private" class="back"><div><a href="private.html">Private</a></div></li>
+			<li id="files" class="back"><div><a href="files.html">Files</a></div></li>
+			<li id="news" class="back"><div><a href="news.html">News</a></div></li>
+			<li id="connection" class="front"><div><a href="index.html">Connect</a></div></li>
+		</ul>
+	</div>
+	<div id="content">
+		<div id="connection_data">
+		<form action="login" method="post">
+			<div class="group">
+				<h4><%= loc(%(Login_Account_Details)) %>:</h4>
+				<div class="col1">
+					<span class="input_label"><label for="login"><%= loc(%(Login_Name)) %>: </label></span>
+					<span class="input_label"><label for="password"><%= loc(%(Login_Password)) %>: </label></span>
+				</div>
+				<div class="col2">
+					<%= text_field_view :outlet => true, :hint => loc(%(Login_Name)) %>
+					<%= text_field_view :outlet => true, :hint => loc(%(Login_Password)) %>
+				</div>
+			</div>
+			<div class="group">
+				<%= button_view :outlet => true, :label => loc(%(Login_Button)), :default => true,
+								:enabled => true, :action => 'Frontend.loginController.login' %>
+			</div>
+		</form>
+		</div>
+	</div>
+	<div id="footer">
+		Connected to: not connected
+	</div>
+</div>
+<% end %>
