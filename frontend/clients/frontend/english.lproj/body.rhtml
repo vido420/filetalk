@@ -11,7 +11,7 @@
 	</div>
 	<div id="content">
 		<div id="connection_data">
-		<form action="login" method="post">
+		<% form_view :loginForm, :outlet => true do %>
 			<div class="group">
 				<h4><%= loc(%(Login_Account_Details)) %>:</h4>
 				<div class="col1">
@@ -19,15 +19,15 @@
 					<span class="input_label"><label for="password"><%= loc(%(Login_Password)) %>: </label></span>
 				</div>
 				<div class="col2">
-					<%= text_field_view :outlet => true, :hint => loc(%(Login_Name)) %>
-					<%= text_field_view :outlet => true, :hint => loc(%(Login_Password)) %>
+					<%= text_field_view :outlet => :loginName, :hint => loc(%(Login_Name)) %>
+					<%= text_field_view :outlet => :loginPassword, :hint => loc(%(Login_Password)) %>
 				</div>
 			</div>
 			<div class="group">
 				<%= button_view :outlet => true, :label => loc(%(Login_Button)), :default => true,
 								:enabled => true, :action => 'Frontend.loginController.login' %>
 			</div>
-		</form>
+		<% end %>
 		</div>
 	</div>
 	<div id="footer">
