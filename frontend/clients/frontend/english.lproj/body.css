@@ -1,0 +1,311 @@
+* {
+    margin: 0px;
+    padding: 0px;
+}
+body {
+    background: #fff url(/images/gradient.jpg) repeat-x;
+    padding-top: 50px;
+    font: 12px "Lucida Grande", "Trebuchet MS", Verdana, sans-serif;
+    color: #000;
+}
+div#container {
+    width: 744px;
+    margin: 0px auto;
+}
+/********Content ********/
+div#content {
+    background: #fff url(/images/content-bg.png) repeat-x;
+    border: 1px solid #ABABAB;
+    padding: 20px 28px;
+    border-top: none;
+    height: 366px;
+}
+
+/*## connection ##*/
+div#connection_data {
+    padding-top: 100px;
+}
+div#connection_data div.group {
+    padding: 5px;
+    clear: both;
+}
+div#connection_data div.group h4 {
+    font-size: 1.3em;
+    line-height: 1.4em;
+    font-weight: normal;
+    margin-bottom: 10px;
+    padding-left: 275px;
+}
+div#connection_data div.group span.input_label {
+    display: block;
+    height: 16px;
+    margin: 5px 0px 16px;
+}
+div#connection_data div.group input#submit {
+    margin-left: 430px;
+}
+div#connection_data div.group div.col1 {
+    text-align: right;
+    width: 300px;
+    float: left;
+}
+div#connection_data div.group div.col2 {
+    text-align: left;
+    float: left;
+}
+div#connection_data div.group div.col2 input {
+    width: 150px;
+    display: block;
+    margin: 5px 20px 15px;
+}
+div#connection_data div.group a.sc-button-view {
+    margin-left: 405px;
+}
+/*## files ##*/
+
+div#filelist {
+    width: 408px;
+    height: 334px;
+    border: 1px solid #d4d4d4;
+    float: left;
+    margin-right: 21px;
+    overflow: auto;
+}
+div#filelist li {
+    padding: 5px 0px 5px 25px;
+    height: 1em;
+    clear: left;
+}
+div#filelist li.file {
+    background-image: url(/images/file.png);
+    background-repeat: no-repeat;
+}
+div#filelist li.folder {
+    background-image: url(/images/folder.png);
+    background-repeat: no-repeat;
+}
+div#filelist li:hover, div#filelist li.odd:hover {
+    background-color: #C7D3E9;
+}
+div#filelist li.odd{
+    background-color: #EBEBEB;
+}
+div#filelist li.selected{
+    background-color: #C7D3E9;
+}
+div#filelist li span {
+    display: block;
+    float: left;
+}
+div#filelist li span.filename {
+    width: 165px;
+}
+div#filelist li span.info {
+    text-align: center;
+    width: 100px;
+}
+div#filelist li span.date {
+    text-align: right; 
+    width: 100px;
+}
+div#filepreview {
+    width: 249px;
+    height: 334px;
+    border: 1px solid #d4d4d4;
+    float: left;
+    overflow: auto;
+}
+
+/*## chat ##*/
+
+
+div#chat_main {
+    width: 488px;
+    height: 334px;
+    float: left;
+    margin-right: 21px;
+    line-height: 1.5em;
+    
+}
+div#chat_main div#chat_history {
+    border: 1px solid #d4d4d4;
+    height: 304px;
+    width: 488px;
+    overflow: auto;
+}
+div#chat_main div#chat_history div.alert {
+    text-align: center;
+    clear: both;
+    color: #979797;
+}
+div#chat_main div#chat_history div.username {
+    clear: both;
+    float: left;
+    width: 104px;
+}
+div#chat_main div#chat_history div.usermessage {
+    float: left;
+    width: 369px;
+}
+div#chat_main div#chat_message {
+    padding-top: 5px;
+}
+div#chat_main div#chat_message input.new_message {
+    width: 430px;
+    margin-right: 5px;
+}
+div#content .admin {
+    color: #AA101F;
+}
+div#chat_users {
+    width: 169px;
+    height: 334px;
+    border: 1px solid #d4d4d4;
+    float: left;
+    overflow: auto;
+}
+div#chat_users li {
+    padding: 5px 0px 5px 25px;
+    height: 1em;
+    clear: left;
+    background-image: url(/images/reguser.png);
+    background-repeat: no-repeat;
+}
+div#chat_users li.admin {
+    background-image: url(/images/adminuser.png);
+}
+div#chat_users li:hover, div#chat_users li.odd:hover {
+    background-color: #C7D3E9;
+}
+div#chat_users li.odd{
+    background-color: #EBEBEB;
+}
+div#chat_users li.selected{
+    background-color: #C7D3E9;
+}
+
+/******** Tools ********/
+
+div.tools {
+    clear: both;
+}
+div.tools ul {
+    height: 53px;
+    list-style: none;
+    margin: 0px 112px;
+}
+div.tools ul li {
+    display: block;
+    float: left;
+    padding-right: 15px;
+}
+
+div.tools ul li div a {
+    text-decoration: none;
+    display: block;
+    background-repeat: no-repeat;
+    background-position: 2px 8px;
+    padding-top: 15px;
+    padding-left: 36px;
+    height: 28px;
+    color: #000;
+}
+div.tools ul li:hover {
+    background-image: url(/images/hover.png);
+}
+div.tools ul li#tool_upload div a {
+    background-image: url(/images/upload.png);
+}
+div.tools ul li#tool_download div a {
+    background-image: url(/images/download.png);
+}
+div.tools ul li#tool_info div a {
+    background-image: url(/images/info.png);
+}
+div.tools ul li#tool_search div a {
+    background-image: url(/images/search.png);
+}
+div.tools ul li#tool_refresh div a {
+    background-image: url(/images/refresh.png);
+}
+div.tools ul li#tool_sendpm div a {
+    background-image: url(/images/sendpm.png);
+}
+div.tools ul li#tool_privatechat div a {
+    background-image: url(/images/privatechat.png);
+}
+div.tools ul li#tool_userinfo div a {
+    background-image: url(/images/userinfo.png);
+}
+div.tools ul li#tool_changename div a {
+    background-image: url(/images/changename.png);
+}
+
+/******** Footer ********/
+div#footer {
+    color: #7D7D7D;
+    text-align: center;
+    clear: both;
+}
+
+/******** Navigation ********/
+div#navigation {
+    background: #444 url(/images/nav.jpg) no-repeat;
+    background: none;
+    border-bottom: 1px solid #ABABAB;
+    height: 53px;
+    font-size: 1.1em;
+}
+div#navigation ul {
+    height: 53px;
+    list-style: none;
+    margin: 0px 112px;
+}
+div#navigation ul li {
+    display: block;
+    float: left;
+    padding-right: 15px;
+}
+
+div#navigation ul li div a {
+    text-decoration: none;
+    display: block;
+    background-repeat: no-repeat;
+    background-position: 2px 18px;
+    padding-top: 25px;
+    padding-left: 36px;
+    height: 28px;
+    color: #000;
+}
+div#navigation ul li.front div {
+    background: url(/images/front-line.png) no-repeat right bottom;
+    padding-right: 15px;
+}
+div#navigation ul li.back {
+}
+div#navigation ul li.front, div#navigation ul li.front:hover {
+    border-bottom: 1px solid #EAEAEA;
+    background: url(/images/front.png) no-repeat;
+    padding-right: 0px;
+}
+div#navigation ul li#chat div a {
+    background-image: url(/images/chat.png);
+}
+div#navigation ul li#private div a {
+    background-image: url(/images/private.png);
+}
+div#navigation ul li#news div a {
+    background-image: url(/images/news.png);
+}
+div#navigation ul li#files div a {
+    background-image: url(/images/files.png);
+}
+div#navigation ul li#connection div a {
+    background-image: url(/images/connection.png);
+}
+div#navigation ul li:hover {
+    background-image: url(/images/hover.png);
+}
+
+/* @end */
+
