@@ -20,7 +20,7 @@
 				</div>
 				<div class="col2">
 					<%= text_field_view :outlet => :loginName, :hint => loc(%(Login_Name)) %>
-					<%= text_field_view :outlet => :loginPassword, :hint => loc(%(Login_Password)) %>
+					<%= password_field_view :outlet => :loginPassword, :hint => loc(%(Login_Password)) %>
 				</div>
 			</div>
 			<div class="group">
@@ -33,5 +33,11 @@
 	<div id="footer">
 		Connected to: not connected
 	</div>
+</div>
+<div style="display:none">
+	<% view :loginProgresDialog, :pane => :dialog, :visible => false, :width => 400 do %>
+		<h1>Logging in</h1>
+		<p>Logging in... Please stay tuned...</p>
+	<% end %>
 </div>
 <% end %>

@@ -18,7 +18,8 @@ Frontend.loginController = SC.Object.create(
 
   // TODO: Add your own code here.
 	login: function() {
-		alert(SC.page.getPath('loginForm.loginName.value') + '/' +
-			  SC.page.getPath('loginForm.loginPassword.value'));
-	}
+	//	alert(SC.page.getPath('loginForm.loginName.value') + '/' +
+	//		  SC.page.getPath('loginForm.loginPassword.value'));
+		SC.page.get('loginProgresDialog').set('isVisible', YES) ;
+	},
 }) ;
