@@ -1,5 +1,5 @@
 // ==========================================================================
-// LoginController
+// Frontend.LoginController
 // ==========================================================================
 
 require('core');
@@ -13,11 +13,12 @@ require('core');
   @version 0.1
   @static
 */
-loginController = SC.Object.create(
-/** @scope loginController */ {
+Frontend.loginController = SC.Object.create(
+/** @scope Frontend.loginController */ {
 
   // TODO: Add your own code here.
 	login: function() {
-		alert('Hello World!');
+		alert(SC.page.getPath('loginForm.loginName.value') + '/' +
+			  SC.page.getPath('loginForm.loginPassword.value'));
 	}
 }) ;
