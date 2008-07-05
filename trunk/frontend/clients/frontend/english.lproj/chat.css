@@ -37,6 +37,17 @@ div#chat_main div#chat_message input.new_message {
 div#content .admin {
     color: #AA101F;
 }
+div#userlist_scroll_view {
+	border: 1px solid #d4d4d4;	
+	height: 334px;
+}
+div#userlist_view div {
+}
+div#userlist_view div.sel {
+	background-color: #C7D3E9;
+	border-color: #C7D3E9;
+	color:#000;
+}
 div#chat_users {
     width: 169px;
     height: 334px;

@@ -10,13 +10,23 @@
 		</p>
 	</div>
 </div>
+	<% scroll_view :userlist_scroll_view, :outlet => true do %>
+		<%= list_view :userlist_view, :outlet => true,
+			:content_value_key => 'nick', :content_icon_key => 'icon',
+			:bind => {
+				:content => 'Frontend.userlistController.arrangedObjects',
+				:selection => 'Frontend.userlistController.selection'
+			} %>
+	<% end %>
+<!--
 <div id="chat_users">
 	<ul>
 		<li class="username color1">Myrd</li>
 		<li class="username odd color1">Doobie</li>
 		<li class="username color1">Death's Avatar</li>
-	</ul>	
+	</ul>
 </div>
+-->
 <div class="tools">
 	<ul>
 		<li id="tool_sendpm"><div><a href="#">Send PM</a></div></li>

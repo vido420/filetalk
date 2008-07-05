@@ -20,6 +20,10 @@ function main() {
   // TODO: refresh() any collections you have created to get their records.
   // ex: Frontend.contacts.refresh() ;
 
+  SC.Store.addRecord(Frontend.User.create({ nick: "Myrd", icon: "/images/adminuser.png" }) );
+  SC.Store.addRecord(Frontend.User.create({ nick: "Greek God", icon: "/images/reguser.png" }) );
+  Frontend.userlistController.set('content', Frontend.User.findAll());
+
   // Step 2: Instantiate Your Views
   // The default code just activates all the views you have on the page. If
   // your app gets any level of complexity, you should just get the views you
