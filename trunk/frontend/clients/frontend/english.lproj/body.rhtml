@@ -1,14 +1,6 @@
 <% content_for('body') do %>
 <div id="container">
-	<div id="navigation">
-		<ul>
-			<li id="chat" class="back"><div><a href="chat.html">Chat</a></div></li>
-			<li id="private" class="back"><div><a href="private.html">Private</a></div></li>
-			<li id="files" class="back"><div><a href="files.html">Files</a></div></li>
-			<li id="news" class="back"><div><a href="news.html">News</a></div></li>
-			<li id="connection" class="front"><div><a href="index.html">Connect</a></div></li>
-		</ul>
-	</div>
+	<%= view :navigation_view, :view => "Frontend.NavigationView" %> 
 	<div id="content">
 		<%= container_view :contentView, :outlet => true %>
 	</div>

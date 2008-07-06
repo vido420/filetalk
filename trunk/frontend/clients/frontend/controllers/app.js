@@ -15,7 +15,9 @@ require('core');
 */
 Frontend.appController = SC.Object.create(
 /** @scope Frontend.appController */ {
-
-  // TODO: Add your own code here.
-
+	tab: 'connection',
+	tabObserver: function() {
+		var tab = this.get('tab');
+		SC.page.get('navigationView').set('value', tab);
+	}.observes('tab')
 }) ;
