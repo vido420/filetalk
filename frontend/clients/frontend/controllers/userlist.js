@@ -13,9 +13,7 @@ require('core');
   @version 0.1
   @static
 */
-Frontend.userlistController = SC.ArrayController.create(
+Frontend.userlistController = SC.CollectionController.create(
 /** @scope Frontend.userlistController */ {
-
-  // TODO: Add your own code here.
 
 }) ;
