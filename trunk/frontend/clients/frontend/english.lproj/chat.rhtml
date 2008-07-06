@@ -1,6 +1,11 @@
 <% view :chatView do %>
 <div id="chat_main">
-	<div id="chat_history"></div>
+	<div id="chat_history">
+		<div class="chat_message">
+			<div class="username">Myrd:</div>
+			<div class="usermessage">Greetings</div>
+		</div>
+	</div>
 	<div id="chat_message">
 		<p>
 			<%= text_field_view :outlet => :chatMessage, :class => 'new_message', :hint => loc(%(Chat_Enter)) %>
