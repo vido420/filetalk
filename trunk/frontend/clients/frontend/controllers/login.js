@@ -16,27 +16,28 @@ require('core');
 Frontend.loginController = SC.Object.create(
 /** @scope Frontend.loginController */ {
 
-  // TODO: Add your own code here.
 	login: function() {
-	//	alert(SC.page.getPath('loginForm.loginName.value') + '/' +
-	//		  SC.page.getPath('loginForm.loginPassword.value'));
-		SC.page.get('loginProgresDialog').set('isVisible', YES);
-		/*
-		Blah.request = new Ajax.Request( '/backend/login', {
-			method: 'POST',
+		SC.page.get('loginProgresDialog').set('isVisible', true);
+		var request = new Ajax.Request('/backend/login', {
+			method: 'GET',
 			parameters: {
-				name: SC.page.getPath('loginForm.loginName.value'),
-				pass: SC.page.getPath('loginForm.loginPassword.value'),
+				name: SC.page.getPath('loginView.loginForm.loginName.value'),
+				pass: SC.page.getPath('loginView.loginForm.loginPassword.value'),
 			},
 			evalJS: false,
 			evalJSON: false,
 			onSuccess: function(response) {
-				alert("ABC");
-		      },
-		      onFailure: function() {
-		        alert("DEF");
-		      }
-		    });
-		*/
+				SC.page.get('loginProgresDialog').set('isVisible', false);
+				Frontend.appController.set('tab', 'chat');
+			  	SC.page.get('contentView').set('content', SC.page.get('chatView'));
+			},
+		   	onFailure: function() {
+				SC.page.get('loginProgresDialog').set('isVisible', false);
+				SC.page.get('loginFailureDialog').set('isVisible', true);
+			}
+		});
+	},
+	hideFailureDialog: function() {
+		SC.page.get('loginFailureDialog').set('isVisible', false);
 	},
 }) ;

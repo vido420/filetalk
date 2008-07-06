@@ -14,6 +14,7 @@ Object.extend(String.English,{
 	"Login_Name": "Login",
 	"Login_Password": "Password",
 	"Login_Button": "Login",
+	'Login_Close': 'Close',
 
 	"Chat_Enter": "Enter Message",
 	"Chat_Send": "Send",
