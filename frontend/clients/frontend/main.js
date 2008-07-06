@@ -33,6 +33,6 @@ function main() {
   // Step 3. Set the content property on your primary controller.
   // This will make your app come alive!
 
-  SC.page.get('contentView').set('content', SC.page.get('chatView'));
+  SC.page.get('contentView').set('content', SC.page.get('loginView'));
 
 };

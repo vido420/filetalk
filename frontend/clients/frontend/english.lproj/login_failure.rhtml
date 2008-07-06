@@ -1,0 +1,11 @@
+<% view :loginFailureDialog, :pane => :dialog, :visible => false, :width => 400 do %>
+	<h1>Login Failed</h1>
+	<p>Could not log in to the server. Please check your login name and password and try again.</p>
+	<div class="buttons">
+	  <%= button_view :outlet => true,
+	    :title => loc(%(Login_Close)),
+	    :default => true,
+	    :width => 60,
+	    :action => 'Frontend.loginController.hideFailureDialog' %>
+	</div>
+<% end %>
