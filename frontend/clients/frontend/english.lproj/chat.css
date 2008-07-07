@@ -7,11 +7,13 @@ div#chat_main {
 	margin-right: 21px;
 	line-height: 1.5em;
 }
-div#chat_main div#chat_history {
+div#chat_main div#chat_history_scroll_view {
 	border: 1px solid #d4d4d4;
 	height: 304px;
 	width: 488px;
-	overflow: auto;
+}
+div#chat_main div#chat_history_scroll_view div#chat_history_view {
+	height: 303px;
 }
 div#chat_main div#chat_history div.alert {
 	text-align: center;
