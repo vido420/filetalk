@@ -9,7 +9,8 @@
 	<% end %>
 	<div id="chat_message">
 		<p>
-			<%= text_field_view :outlet => :chatMessage, :class => 'new_message', :hint => loc(%(Chat_Enter)) %>
+			<%= text_field_view :outlet => :chatMessage, :class => 'new_message',
+						:hint => loc(%(Chat_Enter)), :action => 'Frontend.chatController.send' %>
 			<%= button_view :outlet => :sendButton, :class => 'send_button',
 						:label => loc(%(Chat_Send)), :default => true,
 						:enabled => true, :action => 'Frontend.chatController.send' %>
