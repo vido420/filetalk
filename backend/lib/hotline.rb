@@ -261,7 +261,7 @@ end
 
 module Hotline
 
-  def client_for(session)
+  def Hotline.client_for(session)
     hlc = HOTLINE_CONNECTIONS[session.session_id]
     if hlc && !hlc.connected?
       HOTLINE_CONNECTIONS[session.session_id] = nil
@@ -271,7 +271,7 @@ module Hotline
   end
 
   def Hotline.login(session, username, password)
-    hlc = HotlineClient.new("99.141.94.52", 5500)
+    hlc = HotlineClient.new("68.78.41.124", 5500)
     return nil unless hlc.connect
     return nil unless hlc.login(username, password)
     HOTLINE_CONNECTIONS[session.session_id] = hlc
