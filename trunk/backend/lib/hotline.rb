@@ -238,7 +238,11 @@ class HotlineClient
 		@socket.write(transaction.pack)
 		@task_number += 1
 	end
-	
+
+	def has_next_event?
+		return !@event_queue.empty?
+	end
+
 	def next_event
 		event = nil
 		@event_queue.synchronize do
