@@ -20,11 +20,11 @@ function main() {
   // TODO: refresh() any collections you have created to get their records.
   // ex: Frontend.contacts.refresh() ;
 
-  Frontend.userlistController.set('content', Frontend.User.collection());
+  Frontend.userlistController.set('content', Frontend.User.collection().refresh());
   SC.Store.addRecord(Frontend.User.create({ nick: "Myrd", icon: "/images/adminuser.png" }) );
   SC.Store.addRecord(Frontend.User.create({ nick: "Greek God", icon: "/images/reguser.png" }) );
 
-  Frontend.chatHistoryController.set('content', Frontend.ChatMessage.collection());
+  Frontend.chatHistoryController.set('content', Frontend.ChatMessage.collection().refresh());
   SC.Store.addRecord(Frontend.ChatMessage.create({
 	message: "Myrd: is anyone out there?", }) );
 
