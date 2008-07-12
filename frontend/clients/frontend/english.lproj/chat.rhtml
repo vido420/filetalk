@@ -10,7 +10,7 @@
 	<div id="chat_message">
 		<p>
 			<%= text_field_view :outlet => :chatMessage, :class => 'new_message',
-						:hint => loc(%(Chat_Enter)), :action => 'Frontend.chatController.send' %>
+						:hint => loc(%(Chat_Enter)) %>
 			<%= button_view :outlet => :sendButton, :class => 'send_button',
 						:label => loc(%(Chat_Send)), :default => true,
 						:enabled => true, :action => 'Frontend.chatController.send' %>
@@ -19,6 +19,7 @@
 </div>
 <% scroll_view :userlist_scroll_view, :outlet => true do %>
 	<%= list_view :userlist_view, :outlet => true,
+		:example_view => 'Frontend.UserListItemView',
 		:content_value_key => 'nick', :content_icon_key => 'icon',
 		:bind => {
 			:content => 'Frontend.userlistController.arrangedObjects',
