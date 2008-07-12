@@ -19,6 +19,14 @@ Frontend.UserListItemView = SC.ListItemView.extend(
 		var html = [];
 		var content = this.get('content');
 		var status = (content && content.get) ? content.get('status') : null;
+		/*
+			TODO: Status is actually a flag field:
+				1 = idle
+				2 = admin
+				4 = refuses private messages
+				8 = refuses private chat
+				16 = head admin
+		*/
 		if (status == null) {
 			status = 'color0';
 		} else {
