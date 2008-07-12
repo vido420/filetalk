@@ -15,15 +15,17 @@ class String
   end
 end
 
-HotlineUser = Struct.new(:nick, :login, :socket, :color, :icon, :info)
+HotlineUser = Struct.new(:socket, :nick, :icon, :status)
 
 class TransactionObject
   CHAT = 101
   NICK = 102
+  SOCKET = 103
   ICON = 104
   LOGIN = 105
   PASSWORD = 106
   PARAMETER = 109
+  STATUS = 112
   VERSION = 160
   SERVER_NAME = 162
   USER = 300
@@ -49,6 +51,8 @@ class Transaction
   ID_LOGIN = 107
   ID_AGREE = 121
   ID_GETUSERLIST = 300
+  ID_USERCHANGE = 301
+  ID_USERLEAVE = 302
   ID_USERLIST = 354
 
   attr_reader :type, :id, :task_number, :is_error, :objects
@@ -163,18 +167,62 @@ class HotlineClient
 
   def handle_userlist_transaction(userlist_transaction)
     @users = []
-    add_event('UserList', nil)
+#    add_event('UserList', nil)
     userlist_transaction.objects.each do |object|
       # socket, icon, status, length of nick (all shorts)
       # nick
-      #parsed_data = object.data[0..7].unpack('nnnn')
       if object.id == TransactionObject::USER
-        #(:nick, :login, :socket, :color, :icon, :info)
-        user = HotlineUser.new(object.data[7..-1].strip, '', '', '', '', '')
+        parsed_data = object.data[0..7].unpack('nnnn')
+        #(:socket, :nick, :icon, :status)        
+        user = HotlineUser.new(parsed_data[0], object.data[8..-1].strip,
+                               parsed_data[1], parsed_data[2])
         add_event(TransactionObject::USER, user)
-        users << user
+        @users[user.socket] = user
       end
     end
+  end
+  
+  def read_number(data)
+    if data.length == 2
+      return data.unpack('n')[0]
+    elsif data.length == 4
+      return data.unpack('N')[0]
+    else
+      raise "Invalid number."
+    end
+  end
+
+  def handle_userchange_transaction(transaction)
+    socket = -1
+    nick = nil
+    icon = nil
+    status = nil
+    transaction.objects.each do |object|
+      if object.id == TransactionObject::SOCKET
+        socket = read_number(object.data)
+      elsif object.id == TransactionObject::NICK
+        nick = object.data.to_s
+      elsif object.id == TransactionObject::ICON
+        icon = read_number(object.data)
+      elsif object.id == TransactionObject::STATUS
+        status = read_number(object.data)
+      end
+    end
+    if socket != -1
+      user = @users[socket]
+      if user.nil?
+        user = HotlineUser.new(socket, nick, icon, status)
+        @users[user.socket] = user
+      else
+        user.nick = nick unless nick.nil?
+        user.icon = icon unless icon.nil?
+        user.status = status unless status.nil?
+      end
+      add_event(TransactionObject::USER, user)
+    end
+  end
+
+  def handle_userleave_transaction(transaction)
   end
 
   def run
@@ -196,6 +244,10 @@ class HotlineClient
         handle_userlist_transaction(transaction)
       elsif transaction.id == Transaction::ID_USERLIST
         request_userlist
+      elsif transaction.id == Transaction::ID_USERCHANGE
+        handle_userchange_transaction(transaction)
+      elsif transaction.id == Transaction::ID_USERLEAVE
+        handle_userleave_transaction(transaction)
       elsif transaction.id == Transaction::ID_CHAT_IN
         handle_chat_transaction(transaction)
       elsif transaction.id == 109

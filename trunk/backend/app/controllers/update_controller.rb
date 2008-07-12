@@ -13,7 +13,7 @@ class UpdateController < ApplicationController
       elsif event.type == 'UserList'
         text += { :recordType => 'clearUsers' }.to_json
       elsif event.type == TransactionObject::USER
-        text += { :recordType => 'user', :nick => event.data.nick }.to_json
+        text += { :recordType => 'user', :guid => event.data.socket, :nick => event.data.nick }.to_json
       end
       text += ','
     end
