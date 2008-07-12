@@ -13,6 +13,21 @@ class String
     end
     return self
   end
+  
+  def to_utf8
+    out_text = ''
+    conv = IO.popen("iconv -f MACROMAN -t UTF-8", 'r+')
+    self.each do |line|
+      conv.write line
+    end
+    conv.close_write
+    outlines = conv.readlines
+    outlines.each do |line|
+      out_text += line
+    end
+    conv.close
+    return out_text
+  end
 end
 
 HotlineUser = Struct.new(:socket, :nick, :icon, :status)
@@ -175,7 +190,7 @@ class HotlineClient
       if object.id == TransactionObject::USER
         parsed_data = object.data[0..7].unpack('nnnn')
         #(:socket, :nick, :icon, :status)        
-        user = HotlineUser.new(parsed_data[0], object.data[8..-1].strip,
+        user = HotlineUser.new(parsed_data[0], object.data[8..-1].strip.to_utf8,
                                parsed_data[1], parsed_data[2])
         add_event(TransactionObject::USER, user)
         @users[user.socket] = user
@@ -243,8 +258,7 @@ class HotlineClient
       transaction = Transaction.new(0,0,0)
       transaction.read(@socket)
       if transaction.id == 0
-        transaction.id = @tasks[transaction.task_number]
-        @tasks[transaction.task_number] = nil
+        transaction.id = @tasks.slice!(transaction.task_number)
         should_signal = true
       end
       if transaction.is_error
