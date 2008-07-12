@@ -38,33 +38,34 @@ Frontend.appController = SC.Object.create(
 				var json = '' + response.transport.responseText;
 				json = eval(json);
 				var clearUsers = -1;
+				var records = [];
 				for (var i = 0; i < json.length; i++) {
 					var record = json[i];
-					if (record.recordType == 'chat') {
-						record.recordType = Frontend.ChatMessage;
-					} else if (record.recordType == 'user') {
-						record.recordType = Frontend.User;
-						record.icon = '/images/reguser.png';
-					} else if (record.recordType == 'clearUsers') {
-						clearUsers = i;
-					}
-				}
-				if (clearUsers >= 0) {
-					var newJson = [];
-					for (var i = 0; i < json.length; i++) {
-						var record = json[i];
-						if (record.recordType != 'clearUsers') {
-							if (record.recordType != Frontend.User || i >= clearUsers) {
-								newJson.push(record);
+					if (record.recordType == 'clear_userlist') {
+						var users = Frontend.User.findAll();
+						for (var i = users.length - 1; i >= 0; i--) {
+							SC.Store.removeRecord(users[i]);
+						}
+					} else if (record.recordType == 'user_left') {
+						var user = Frontend.User.find(record.guid);
+						if (user != null) {
+							SC.Store.removeRecord(user);
+						}
+					} else {
+						if (record.recordType == 'chat') {
+							record.recordType = Frontend.ChatMessage;
+						} else if (record.recordType == 'user') {
+							record.recordType = Frontend.User;
+							if (record.status > 1) {
+								record.icon = '/images/adminuser.png';								
+							} else {
+								record.icon = '/images/reguser.png';
 							}
 						}
+						records.push(record);
 					}
-					json = newJson;
-					var users = Frontend.User.findAll();
-					for (var i = users.length - 1; i >= 0; i--)
-						SC.Store.removeRecord(users[i]);
 				}
-				SC.Store.updateRecords(json);
+				SC.Store.updateRecords(records);
 				Frontend.chatHistoryController.set('content', Frontend.ChatMessage.collection().refresh());
 			  	Frontend.userlistController.set('content', Frontend.User.collection().refresh());
 			},

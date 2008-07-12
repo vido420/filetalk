@@ -11,9 +11,12 @@ class UpdateController < ApplicationController
       if event.type == TransactionObject::CHAT
         text += { :recordType => 'chat', :message => event.data }.to_json
       elsif event.type == 'UserList'
-        text += { :recordType => 'clearUsers' }.to_json
+        text += { :recordType => 'clear_userlist' }.to_json
       elsif event.type == TransactionObject::USER
-        text += { :recordType => 'user', :guid => event.data.socket, :nick => event.data.nick }.to_json
+        text += { :recordType => 'user', :guid => event.data.socket,
+                  :nick => event.data.nick, :status => event.data.status }.to_json
+      elsif event.type == TransactionObject::USER_LEFT
+        text += { :recordType => 'user_left', :guid => event.data.socket }.to_json
       end
       text += ','
     end

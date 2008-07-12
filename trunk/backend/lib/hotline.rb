@@ -29,6 +29,7 @@ class TransactionObject
   VERSION = 160
   SERVER_NAME = 162
   USER = 300
+  USER_LEFT = -300 # not part of HL protocol
 
   attr_reader :id, :data
 
@@ -223,6 +224,18 @@ class HotlineClient
   end
 
   def handle_userleave_transaction(transaction)
+    socket = -1
+    transaction.objects.each do |object|
+      if object.id == TransactionObject::SOCKET
+        socket = read_number(object.data)
+      end
+    end
+    if socket != -1
+      user = @users.slice!(socket)
+      unless user.nil?
+        add_event(TransactionObject::USER_LEFT, user)
+      end
+    end
   end
 
   def run
