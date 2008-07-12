@@ -32,6 +32,13 @@ Frontend.appController = SC.Object.create(
 			evalJSON: false,
 			onSuccess: function(response) {
 				var json = '' + response.transport.responseText;
+				json = eval(json);
+				for (var i = 0; i < json.length; i++) {
+					var record = json[i];
+					if (record.recordType == 'chat') {
+						record.recordType = Frontend.ChatMessage;
+					}
+				}
 				SC.Store.updateRecords(eval(json));
 				Frontend.chatHistoryController.set('content', Frontend.ChatMessage.collection().refresh());
 			},
