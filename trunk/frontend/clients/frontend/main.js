@@ -21,12 +21,7 @@ function main() {
   // ex: Frontend.contacts.refresh() ;
 
   Frontend.userlistController.set('content', Frontend.User.collection().refresh());
-  SC.Store.addRecord(Frontend.User.create({ nick: "Myrd", icon: "/images/adminuser.png" }) );
-  SC.Store.addRecord(Frontend.User.create({ nick: "Greek God", icon: "/images/reguser.png" }) );
-
   Frontend.chatHistoryController.set('content', Frontend.ChatMessage.collection().refresh());
-  SC.Store.addRecord(Frontend.ChatMessage.create({
-	message: "Myrd: is anyone out there?", }) );
 
   // Step 2: Instantiate Your Views
   // The default code just activates all the views you have on the page. If

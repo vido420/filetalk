@@ -29,8 +29,6 @@ Frontend.loginController = SC.Object.create(
 			onSuccess: function(response) {
 				SC.page.get('loginProgresDialog').set('isVisible', false);
 				Frontend.appController.set('tab', 'chat');
-			  	SC.page.get('contentView').set('content', SC.page.get('chatView'));
-				Frontend.appController.startPolling();
 			},
 		   	onFailure: function() {
 				SC.page.get('loginProgresDialog').set('isVisible', false);
