@@ -349,13 +349,13 @@ module Hotline
     return hlc
   end
 
-  def Hotline.login(session, username, password)
+  def Hotline.login(session, host, port, username, password)
     hlc = HOTLINE_CONNECTIONS[session.session_id]
     if hlc
       hlc.close
       HOTLINE_CONNECTIONS[session.session_id] = nil      
     end
-    hlc = HotlineClient.new("68.78.41.124", 5500)
+    hlc = HotlineClient.new(host, port)
     return nil unless hlc.connect
     return nil unless hlc.login(username, password)
     HOTLINE_CONNECTIONS[session.session_id] = hlc
