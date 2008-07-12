@@ -79,6 +79,11 @@ div#chat_users li.selected{
 	background-color: #C7D3E9;
 }
 
+.color0 { color: #000; }
+.color1 { color: #888; }
+.color2 { color: #FF0000; }
+.color3 { color: #FF8888; }
+
 /******** Tools ********/
 
 div.tools {

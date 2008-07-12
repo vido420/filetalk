@@ -15,10 +15,5 @@ require('core');
 Frontend.User = SC.Record.extend(
 /** @scope Frontend.User.prototype */ {
 
-  // TODO: Add your own code here.
-  socket: Number,
-//  icon: Number,
-  status: Number,
-
 }) ;
 
