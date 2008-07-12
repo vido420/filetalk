@@ -9,7 +9,7 @@ class UpdateController < ApplicationController
     while hlc.has_next_event?
       event = hlc.next_event
       if event.id == TransactionObject::CHAT
-        text += "{ recordType: Frontend.ChatMessage, message: #{event.data[1..-1].to_s.to_json} },"
+        text += { :recordType => 'chat', :message => event.data[1..-1].to_s }.to_json
       end
     end
     text += ']'
