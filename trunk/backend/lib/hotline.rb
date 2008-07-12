@@ -182,7 +182,7 @@ class HotlineClient
       end
     end
   end
-  
+
   def read_number(data)
     if data.length == 2
       return data.unpack('n')[0]
@@ -350,6 +350,11 @@ module Hotline
   end
 
   def Hotline.login(session, username, password)
+    hlc = HOTLINE_CONNECTIONS[session.session_id]
+    if hlc
+      hlc.close
+      HOTLINE_CONNECTIONS[session.session_id] = nil      
+    end
     hlc = HotlineClient.new("68.78.41.124", 5500)
     return nil unless hlc.connect
     return nil unless hlc.login(username, password)
