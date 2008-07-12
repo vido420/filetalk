@@ -8,9 +8,14 @@ class UpdateController < ApplicationController
     text = '['
     while hlc.has_next_event?
       event = hlc.next_event
-      if event.id == TransactionObject::CHAT
-        text += { :recordType => 'chat', :message => event.data[1..-1].to_s }.to_json
+      if event.type == TransactionObject::CHAT
+        text += { :recordType => 'chat', :message => event.data }.to_json
+      elsif event.type == 'UserList'
+        text += { :recordType => 'clearUsers' }.to_json
+      elsif event.type == TransactionObject::USER
+        text += { :recordType => 'user', :nick => event.data.nick }.to_json
       end
+      text += ','
     end
     text += ']'
     render :text => text and return
