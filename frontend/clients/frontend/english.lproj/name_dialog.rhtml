@@ -1,0 +1,21 @@
+<% view :nameDialog, :pane => :dialog, :visible => false, :width => 215 do %>
+	<h1><%= loc(%(NameDialog_Title)) %></h1>
+	<% form_view :nameForm, :outlet => true do %>
+	<p>
+		<label for="nameField"><%= loc(%(NameDialog_Name)) %>:</label>
+		<%= text_field_view :nameField, :outlet => true %>
+	</p>
+	<div class="buttons">
+		<%= button_view :outlet => true,
+			:title => loc(%(NameDialog_Cancel)),
+			:cancel => true,
+			:width => 40,
+			:action => 'Frontend.appController.hideChangeNickDialog' %>
+		<%= button_view :outlet => true,
+			:title => loc(%(NameDialog_OK)),
+			:default => true,
+			:width => 40,
+			:action => 'Frontend.appController.changeNick' %>
+	</div>
+	<% end %>
+<% end %>
