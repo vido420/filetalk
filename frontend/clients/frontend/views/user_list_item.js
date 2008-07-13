@@ -30,6 +30,7 @@ Frontend.UserListItemView = SC.ListItemView.extend(
 		if (status == null) {
 			status = 'color0';
 		} else {
+			status&=~(4+8+16);
 			status = 'color' + status;
 		}
 		html.push('<span class="sc-label ' + status + '">');
