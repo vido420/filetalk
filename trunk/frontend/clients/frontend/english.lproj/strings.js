@@ -18,4 +18,14 @@ Object.extend(String.English,{
 
 	"Chat_Enter": "Enter Message",
 	"Chat_Send": "Send",
+	
+	"User_Send_PM": "Send PM",
+	"User_Private_Chat": "Private Chat",
+	"User_Get_Info": "User Info",
+	"User_Change_Name": "Change Name",
+
+	"NameDialog_Title": "Change Displayed Name",
+	"NameDialog_Name": "Name",
+	"NameDialog_Cancel": "Cancel",
+	"NameDialog_OK": "OK",
 }) ;

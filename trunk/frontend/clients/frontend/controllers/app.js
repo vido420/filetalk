@@ -73,4 +73,13 @@ Frontend.appController = SC.Object.create(
 			}
 		});	
 	},
+	showChangeNickDialog: function() {
+		SC.page.get('nameDialog').set('isVisible', true);
+	},
+	hideChangeNickDialog: function() {
+		SC.page.get('nameDialog').set('isVisible', false);
+	},
+	changeNick: function() {
+		Frontend.appController.hideChangeNickDialog();
+	},
 }) ;

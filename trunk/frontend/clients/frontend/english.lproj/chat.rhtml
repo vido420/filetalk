@@ -8,15 +8,15 @@
 			} %>
 	<% end %>
 	<div id="chat_message">
+		<% form_view :chatForm, :outlet => true do %>
 		<p>
-			<% form_view :chatForm, :outlet => true do %>
 			<%= text_field_view :outlet => :chatMessage, :class => 'new_message',
 						:hint => loc(%(Chat_Enter)) %>
 			<%= button_view :outlet => :sendButton, :class => 'send_button',
 						:label => loc(%(Chat_Send)), :default => true,
 						:enabled => true, :action => 'Frontend.chatController.send' %>
-			<% end %>
 		</p>
+		<% end %>
 	</div>
 </div>
 <% scroll_view :userlist_scroll_view, :outlet => true do %>
@@ -30,10 +30,26 @@
 <% end %>
 <div class="tools">
 	<ul>
-		<li id="tool_sendpm"><a href="#">Send PM</a></li>
-		<li id="tool_privatechat"><a href="#">Private Chat</a></li>
-		<li id="tool_userinfo"><a href="#">User Info</a></li>
-		<li id="tool_changename"><a href="#">Change Name</a></li>
+		<li id="tool_sendpm">
+			<a href="#">
+				<%= loc(%(User_Send_PM)) %>
+			</a>
+		</li>
+		<li id="tool_privatechat">
+			<a href="#">
+				<%= loc(%(User_Private_Chat)) %>
+			</a>
+		</li>
+		<li id="tool_userinfo">
+			<a href="#">
+				<%= loc(%(User_Get_Info)) %>
+			</a>
+		</li>
+		<li id="tool_changename">
+			<a href="javascript: Frontend.appController.showChangeNickDialog();">
+				<%= loc(%(User_Change_Name)) %>
+			</a>
+		</li>
 	</ul>
 </div>
 <% end %>
