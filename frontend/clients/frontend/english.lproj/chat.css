@@ -97,46 +97,46 @@ div.tools ul {
 div.tools ul li {
 	display: block;
 	float: left;
-	padding-right: 15px;
 }
 
-div.tools ul li div a {
+div.tools ul li a {
 	text-decoration: none;
 	display: block;
 	background-repeat: no-repeat;
 	background-position: 2px 8px;
 	padding-top: 15px;
 	padding-left: 36px;
+	padding-right: 15px;
 	height: 28px;
 	color: #000;
 }
 div.tools ul li:hover {
 	background-image: url(/images/hover.png);
 }
-div.tools ul li#tool_upload div a {
+div.tools ul li#tool_upload div {
 	background-image: url(/images/upload.png);
 }
-div.tools ul li#tool_download div a {
+div.tools ul li#tool_download div {
 	background-image: url(/images/download.png);
 }
-div.tools ul li#tool_info div a {
+div.tools ul li#tool_info div {
 	background-image: url(/images/info.png);
 }
-div.tools ul li#tool_search div a {
+div.tools ul li#tool_search div {
 	background-image: url(/images/search.png);
 }
-div.tools ul li#tool_refresh div a {
+div.tools ul li#tool_refresh div {
 	background-image: url(/images/refresh.png);
 }
-div.tools ul li#tool_sendpm div a {
+div.tools ul li#tool_sendpm a {
 	background-image: url(/images/sendpm.png);
 }
-div.tools ul li#tool_privatechat div a {
+div.tools ul li#tool_privatechat a {
 	background-image: url(/images/privatechat.png);
 }
-div.tools ul li#tool_userinfo div a {
+div.tools ul li#tool_userinfo a {
 	background-image: url(/images/userinfo.png);
 }
-div.tools ul li#tool_changename div a {
+div.tools ul li#tool_changename a {
 	background-image: url(/images/changename.png);
 }
