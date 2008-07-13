@@ -176,7 +176,7 @@ class HotlineClient
   def handle_chat_transaction(chat_transaction)
     chat_transaction.objects.each do |object|
       if object.id == TransactionObject::CHAT
-        add_event(TransactionObject::CHAT, object.data[1..-1].to_s)
+        add_event(TransactionObject::CHAT, object.data[1..-1].to_s.to_utf8)
       end
     end
   end
@@ -364,11 +364,8 @@ module Hotline
   end
 
   def Hotline.login(session, host, port, username, password)
-    hlc = HOTLINE_CONNECTIONS[session.session_id]
-    if hlc
-      hlc.close
-      HOTLINE_CONNECTIONS[session.session_id] = nil      
-    end
+    hlc = HOTLINE_CONNECTIONS.slice!(session.session_id)
+    hlc.close if hlc and hlc.kind_of? HotlineClient
     hlc = HotlineClient.new(host, port)
     return nil unless hlc.connect
     return nil unless hlc.login(username, password)
