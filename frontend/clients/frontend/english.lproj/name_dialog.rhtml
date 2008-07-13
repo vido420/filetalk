@@ -10,12 +10,12 @@
 			:title => loc(%(NameDialog_Cancel)),
 			:cancel => true,
 			:width => 40,
-			:action => 'Frontend.appController.hideChangeNickDialog' %>
+			:action => 'Frontend.chatController.hideChangeNickDialog' %>
 		<%= button_view :outlet => true,
 			:title => loc(%(NameDialog_OK)),
 			:default => true,
 			:width => 40,
-			:action => 'Frontend.appController.changeNick' %>
+			:action => 'Frontend.chatController.changeNick' %>
 	</div>
 	<% end %>
 <% end %>
