@@ -33,5 +33,29 @@ Frontend.chatController = SC.Object.create(
 			});
 			SC.page.getPath('chatView.chatForm.chatMessage').rootElement.select();
 		}
-	}	
+	},
+	showChangeNickDialog: function() {
+		SC.page.get('nameDialog').set('isVisible', true);
+	},
+	hideChangeNickDialog: function() {
+		SC.page.get('nameDialog').set('isVisible', false);
+	},
+	changeNick: function() {
+		var nick = SC.page.getPath('nameDialog.nameForm.nameField.value');
+		if (nick != null) {
+			var request = new Ajax.Request('/backend/chat/set_nick', {
+				method: 'GET',
+				parameters: {
+					n: nick,
+				},
+				evalJS: false,
+				evalJSON: false,
+				onSuccess: function(response) {
+					Frontend.chatController.hideChangeNickDialog();
+				},
+			   	onFailure: function() {
+				}
+			});
+		}
+	},
 }) ;

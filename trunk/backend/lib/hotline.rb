@@ -69,6 +69,8 @@ class Transaction
   ID_GETUSERLIST = 300
   ID_USERCHANGE = 301
   ID_USERLEAVE = 302
+  ID_GET_USERINFO = 303
+  ID_CHANGE_NICK = 304
   ID_USERLIST = 354
 
   attr_reader :type, :id, :task_number, :is_error, :objects
@@ -324,6 +326,14 @@ class HotlineClient
     transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_CHAT, @task_number)
     transaction << TransactionObject.new(TransactionObject::CHAT, message)
     transaction << TransactionObject.new(TransactionObject::PARAMETER, [1].pack('n'))
+    @socket.write(transaction.pack)
+    @task_number += 1
+  end
+
+  def set_nick(nick)
+    transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_CHANGE_NICK, @task_number)
+    transaction << TransactionObject.new(TransactionObject::NICK, nick)
+    transaction << TransactionObject.new(TransactionObject::ICON, "\0\0")
     @socket.write(transaction.pack)
     @task_number += 1
   end
