@@ -385,7 +385,8 @@ module Hotline
   end
 
   def Hotline.login(session, host, port, username, password)
-    hlc = HOTLINE_CONNECTIONS.slice!(session.session_id)
+    hlc = HOTLINE_CONNECTIONS[session.session_id]
+    HOTLINE_CONNECTIONS[session.session_id] = nil
     hlc.close if hlc and hlc.kind_of? HotlineClient
     hlc = HotlineClient.new(host, port)
     return nil unless hlc.connect
