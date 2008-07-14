@@ -18,7 +18,8 @@ Object.extend(String.English,{
 	"Login_Progress_Message": "Logging in... Please stay tuned...",
 	"Login_Failed": "Login Failed",
 	"Login_Failed_Message": "Could not log in to the server. Please check your login name and password and try again.",
-	'Login_Close': 'Close',
+
+	'Error_Close': 'Close',
 
 	"Chat_Enter": "Enter Message",
 	"Chat_Send": "Send",

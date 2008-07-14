@@ -1,0 +1,11 @@
+<% view :errorDialog, :pane => :dialog, :visible => false, :width => 400 do %>
+	<h1><%= label_view :bind => { :value => 'Frontend.errorMessageController.errorTitle' } %></h1>
+	<p><%= label_view :bind => { :value => 'Frontend.errorMessageController.errorMessage' } %></p>
+	<div class="buttons">
+	  <%= button_view :outlet => true,
+	    :title => loc(%(Error_Close)),
+	    :default => true,
+	    :width => 60,
+	    :action => 'Frontend.errorMessageController.hideErrorDialog' %>
+	</div>
+<% end %>
