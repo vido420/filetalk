@@ -1,6 +1,6 @@
 <% view :loginFailureDialog, :pane => :dialog, :visible => false, :width => 400 do %>
-	<h1>Login Failed</h1>
-	<p>Could not log in to the server. Please check your login name and password and try again.</p>
+	<h1><%= loc(%(Login_Failed)) %></h1>
+	<p><%= loc(%(Login_Failed_Message)) %></p>
 	<div class="buttons">
 	  <%= button_view :outlet => true,
 	    :title => loc(%(Login_Close)),
