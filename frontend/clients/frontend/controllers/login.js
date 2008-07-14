@@ -27,6 +27,7 @@ Frontend.loginController = SC.Object.create(
 			evalJS: false,
 			evalJSON: false,
 			onSuccess: function(response) {
+				Frontend.chatController.set('userNick', ('' + response.transport.responseText));
 				SC.page.get('loginProgresDialog').set('isVisible', false);
 				Frontend.appController.set('tab', 'chat');
 			},

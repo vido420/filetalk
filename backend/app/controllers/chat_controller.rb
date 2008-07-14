@@ -12,6 +12,6 @@ class ChatController < ApplicationController
     render :text => 'Not logged in.', :status => 500 and return if hlc.nil?
     render :text => 'Invalid parameter.', :status => 500 and return if params['n'].nil?
     hlc.set_nick(params['n'])
-    render :text => 'OK' and return
+    render :text => hlc.nick and return
   end
 end

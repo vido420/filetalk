@@ -13,10 +13,10 @@ class String
     end
     return self
   end
-  
-  def to_utf8
+
+  def gen_convert(from, to)
     out_text = ''
-    conv = IO.popen("iconv -f MACROMAN -t UTF-8", 'r+')
+    conv = IO.popen("iconv -f #{from} -t #{to}", 'r+')
     self.each do |line|
       conv.write line
     end
@@ -27,6 +27,14 @@ class String
     end
     conv.close
     return out_text
+  end
+
+  def to_macroman
+    gen_convert('UTF-8', 'MACROMAN')
+  end
+
+  def to_utf8
+    gen_convert('MACROMAN', 'UTF-8')
   end
 end
 
@@ -126,11 +134,12 @@ class HotlineClient
 
   HotlineEvent = Struct.new(:type, :data)
 
-  attr_reader :users
+  attr_reader :users, :nick
 
   def initialize(host, port)
     @host = host
     @port = port
+    @nick = nil
     @task_number = 1
     @tasks = []
     @tasks.extend(MonitorMixin)
@@ -281,7 +290,7 @@ class HotlineClient
         handle_chat_transaction(transaction)
       elsif transaction.id == 109
         transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_AGREE, @task_number)
-        transaction << TransactionObject.new(TransactionObject::NICK, "testing-Myrd")
+        transaction << TransactionObject.new(TransactionObject::NICK, @nick)
         transaction << TransactionObject.new(TransactionObject::ICON, "\0\0")
         transaction << TransactionObject.new(113, "\0\0")
         @socket.write(transaction.pack)
@@ -295,6 +304,7 @@ class HotlineClient
   end
 
   def login(username, password)
+    @nick = username
     transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_LOGIN, @task_number)
     transaction << TransactionObject.new(TransactionObject::LOGIN, username.encode)
     transaction << TransactionObject.new(TransactionObject::PASSWORD, password.encode)
@@ -331,6 +341,7 @@ class HotlineClient
   end
 
   def set_nick(nick)
+    @nick = nick
     transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_CHANGE_NICK, @task_number)
     transaction << TransactionObject.new(TransactionObject::NICK, nick)
     transaction << TransactionObject.new(TransactionObject::ICON, "\0\0")
