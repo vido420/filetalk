@@ -33,8 +33,7 @@ Frontend.loginController = SC.Object.create(
 			},
 		   	onFailure: function() {
 				SC.page.get('loginProgresDialog').set('isVisible', false);
-				Frontend.errorMessageController.showErrorDialog("Login_Failed".loc(), "Login_Failed_Message".loc());
-				SC.page.get('loginFailureDialog').set('isVisible', true);
+				Frontend.errorMessageController.showErrorDialog("Login_Failed".loc(), "Login_Failed_Message".loc(), null);
 			}
 		});
 	},

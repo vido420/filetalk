@@ -22,12 +22,15 @@ Frontend.appController = SC.Object.create(
 		if (tab == 'chat') {
 			SC.page.get('contentView').set('content', SC.page.get('chatView'));
 			Frontend.appController.startPolling();
+		} else if (tab == 'connection') {
+			SC.page.get('contentView').set('content', SC.page.get('loginView'));
 		}
 	}.observes('tab'),
 	startPolling: function() {
 		if (!this._timer) this._timer = SC.Timer.schedule({
 			target: this, action: 'poll', repeats: true, interval: 1000
 		});
+		this._timer.set('isPaused', false);
 	},
 	poll: function() {
 		var request = new Ajax.Request('/backend/update', {
@@ -70,6 +73,9 @@ Frontend.appController = SC.Object.create(
 			  	Frontend.userlistController.set('content', Frontend.User.collection().refresh());
 			},
 		   	onFailure: function() {
+				Frontend.appController.get('_timer').set('isPaused', true);
+				var closeAction = function() { Frontend.appController.set('tab', 'connection'); }
+				Frontend.errorMessageController.showErrorDialog("Connection_Lost".loc(), "Connection_Lost_Message".loc(), closeAction);
 			}
 		});	
 	},

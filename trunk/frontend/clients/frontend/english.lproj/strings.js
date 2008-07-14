@@ -19,6 +19,9 @@ Object.extend(String.English,{
 	"Login_Failed": "Login Failed",
 	"Login_Failed_Message": "Could not log in to the server. Please check your login name and password and try again.",
 
+	"Connection_Lost": "Disconnected",
+	"Connection_Lost_Message": "You have been disconnected from the server.",
+
 	'Error_Close': 'Close',
 
 	"Chat_Enter": "Enter Message",
