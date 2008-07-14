@@ -32,8 +32,8 @@ Frontend.NavigationView = SC.View.extend(
 						return [
 							'<li id="', item.id, '" class="',
 							(item.id == view.value ? 'front' : 'back'),
-							'"><div><a href="',	item.action, '">',
-							item.name, '</a></div></li>',
+							'"><a href="javascript: ', item.action, '">',
+							item.name, '</a></li>',
 						].join('');
 					}).join(''),
 				'</ul>',
@@ -43,11 +43,11 @@ Frontend.NavigationView = SC.View.extend(
 
 	valueObserver: function() {
 		var items = [
-			{id:'chat', action:'chat.html', name:'Chat'},
-			{id:'private', action:'private.html', name:'Private'},
-			{id:'files', action:'files.html', name:'Files'},
-			{id:'news', action:'news.html', name:'News'},
-			{id:'connection', action:'index.html', name:'Connect'},
+			{id:'chat', action:'Frontend.appController.notImplemented();', name:'Chat'},
+			{id:'private', action:'Frontend.appController.notImplemented();', name:'Private'},
+			{id:'files', action:'Frontend.appController.notImplemented();', name:'Files'},
+			{id:'news', action:'Frontend.appController.notImplemented();', name:'News'},
+			{id:'connection', action:'Frontend.appController.notImplemented();', name:'Connect'},
 		];
 		this.set('innerHTML', this.formatter(items, this));
 	}.observes('value'),

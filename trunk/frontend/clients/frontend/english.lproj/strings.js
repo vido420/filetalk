@@ -22,6 +22,9 @@ Object.extend(String.English,{
 	"Connection_Lost": "Disconnected",
 	"Connection_Lost_Message": "You have been disconnected from the server.",
 
+	"NotImplemented_Title": "Not Implemented",
+	"NotImplemented_Message": "The feature you tried to use is not yet implemented.",
+
 	'Error_Close': 'Close',
 
 	"Chat_Enter": "Enter Message",
