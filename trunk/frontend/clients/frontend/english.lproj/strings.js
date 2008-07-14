@@ -15,7 +15,7 @@ Object.extend(String.English,{
 	"Login_Password": "Password",
 	"Login_Button": "Login",
 	"Login_Progress": "Logging in",
-	"Login_Progress_message": "Logging in... Please stay tuned...",
+	"Login_Progress_Message": "Logging in... Please stay tuned...",
 	"Login_Failed": "Login Failed",
 	"Login_Failed_Message": "Could not log in to the server. Please check your login name and password and try again.",
 	'Login_Close': 'Close',
