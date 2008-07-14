@@ -15,6 +15,9 @@ require('core');
 */
 Frontend.appController = SC.Object.create(
 /** @scope Frontend.appController */ {
+	notImplemented: function() {
+		Frontend.errorMessageController.showErrorDialog("NotImplemented_Title".loc(), "NotImplemented_Message".loc(), null);
+	},
 	tab: 'connection',
 	tabObserver: function() {
 		var tab = this.get('tab');

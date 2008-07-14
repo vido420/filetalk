@@ -99,22 +99,21 @@ div#navigation ul {
 div#navigation ul li {
     display: block;
     float: left;
-    padding-right: 15px;
 }
 
-div#navigation ul li div a {
+div#navigation ul li a {
     text-decoration: none;
     display: block;
     background-repeat: no-repeat;
     background-position: 2px 18px;
     padding-top: 25px;
     padding-left: 36px;
+    padding-right: 15px;
     height: 28px;
     color: #000;
 }
 div#navigation ul li.front div {
     background: url(/images/front-line.png) no-repeat right bottom;
-    padding-right: 15px;
 }
 div#navigation ul li.back {
 }
@@ -123,19 +122,19 @@ div#navigation ul li.front, div#navigation ul li.front:hover {
     background: url(/images/front.png) no-repeat;
     padding-right: 0px;
 }
-div#navigation ul li#chat div a {
+div#navigation ul li#chat a {
     background-image: url(/images/chat.png);
 }
-div#navigation ul li#private div a {
+div#navigation ul li#private a {
     background-image: url(/images/private.png);
 }
-div#navigation ul li#news div a {
+div#navigation ul li#news a {
     background-image: url(/images/news.png);
 }
-div#navigation ul li#files div a {
+div#navigation ul li#files a {
     background-image: url(/images/files.png);
 }
-div#navigation ul li#connection div a {
+div#navigation ul li#connection a {
     background-image: url(/images/connection.png);
 }
 div#navigation ul li:hover {
