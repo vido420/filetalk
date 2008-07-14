@@ -34,8 +34,11 @@ Frontend.chatController = SC.Object.create(
 			SC.page.getPath('chatView.chatForm.chatMessage').rootElement.select();
 		}
 	},
+	userNick: "error",
 	showChangeNickDialog: function() {
+		var userNick = Frontend.chatController.get('userNick');
 		SC.page.get('nameDialog').set('isVisible', true);
+		SC.page.getPath('nameDialog.nameForm.nameField').rootElement.value = userNick;
 	},
 	hideChangeNickDialog: function() {
 		SC.page.get('nameDialog').set('isVisible', false);
@@ -51,6 +54,7 @@ Frontend.chatController = SC.Object.create(
 				evalJS: false,
 				evalJSON: false,
 				onSuccess: function(response) {
+					Frontend.chatController.set('userNick', ('' + response.transport.responseText));
 					Frontend.chatController.hideChangeNickDialog();
 				},
 			   	onFailure: function() {
