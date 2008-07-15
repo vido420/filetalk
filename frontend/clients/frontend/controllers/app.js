@@ -48,10 +48,7 @@ Frontend.appController = SC.Object.create(
 				for (var i = 0; i < json.length; i++) {
 					var record = json[i];
 					if (record.recordType == 'clear_userlist') {
-						var users = Frontend.User.findAll();
-						for (var i = users.length - 1; i >= 0; i--) {
-							SC.Store.removeRecord(users[i]);
-						}
+						Frontend.User.removeAll();
 					} else if (record.recordType == 'user_left') {
 						var user = Frontend.User.find(record.guid);
 						if (user != null) {
@@ -60,6 +57,17 @@ Frontend.appController = SC.Object.create(
 					} else {
 						if (record.recordType == 'chat') {
 							record.recordType = Frontend.ChatMessage;
+							var msg = record.message;
+							for (var i = 0; i < msg.length; i++) {
+								if (msg.charAt(i) != ' ') {
+									msg = msg.substring(i);
+									for (; i > 0; i--) {
+										msg = '&nbsp;' + msg;
+									}
+									record.message = msg;
+									break;
+								}
+							}
 						} else if (record.recordType == 'user') {
 							record.recordType = Frontend.User;
 							if (record.status > 1) {
@@ -77,7 +85,11 @@ Frontend.appController = SC.Object.create(
 			},
 		   	onFailure: function() {
 				Frontend.appController.get('_timer').set('isPaused', true);
-				var closeAction = function() { Frontend.appController.set('tab', 'connection'); }
+				var closeAction = function() {
+					Frontend.appController.set('tab', 'connection');
+					Frontend.ChatMessage.removeAll();
+					Frontend.User.removeAll();
+				}
 				Frontend.errorMessageController.showErrorDialog("Connection_Lost".loc(), "Connection_Lost_Message".loc(), closeAction);
 			}
 		});	

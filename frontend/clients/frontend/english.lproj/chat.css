@@ -15,21 +15,12 @@ div#chat_main div#chat_history_scroll_view {
 div#chat_main div#chat_history_scroll_view div#chat_history_view {
 	height: 303px;
 }
-div#chat_main div#chat_history div.alert {
-	text-align: center;
-	clear: both;
-	color: #979797;
+div#chat_history_view div.sc-list-item-view {
+	padding:0;
 }
-div#chat_main div#chat_history div.username {
-	clear: both;
-	float: left;
-	text-align: right;
-	padding-right:8px;
-	width: 60px;
-}
-div#chat_main div#chat_history div.usermessage {
-	float: left;
-	width: 369px;
+div#chat_history_view div.sc-list-item-view span.sc-label {
+	font-family: Monaco, "Courier New", monospace;
+	font-size: 11px;
 }
 div#chat_main div#chat_message {
 	padding-top: 5px;
@@ -44,8 +35,6 @@ div#content .admin {
 div#userlist_scroll_view {
 	border: 1px solid #d4d4d4;	
 	height: 330px;
-}
-div#userlist_view div {
 }
 div#userlist_view div.sel {
 	background-color: #C7D3E9;
