@@ -21,6 +21,11 @@ div#content {
     height: 366px;
 }
 
+div#errorMessage {
+	margin-top:4px;
+	margin-bottom:2px;
+}
+
 /*## files ##*/
 
 div#filelist {
