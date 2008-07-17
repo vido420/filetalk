@@ -149,6 +149,7 @@ class HotlineClient
     @event_queue = []
     @event_queue.extend(MonitorMixin)
     @event_queue_empty_cond = @event_queue.new_cond
+    @thread = nil
   end
   
   def connect
@@ -159,7 +160,7 @@ class HotlineClient
     if resp == 'TRTP'
       result = @socket.read(4).unpack('N')[0]
       if result == 0
-        Thread.new { run }
+        @thread = Thread.new { run }
         return true
       end
     end
@@ -298,9 +299,11 @@ class HotlineClient
       end
       @tasks.synchronize { @task_cond.signal } if should_signal
     end
-  rescue Exception => e  
-    puts e.message  
-    puts e.backtrace.inspect 
+  rescue Exception => e
+    puts e.message
+    puts e.backtrace.inspect
+    @socket.close if @socket
+    @socket = nil
   end
 
   def login(username, password)
@@ -364,6 +367,8 @@ class HotlineClient
 
   def close
     puts "close!"
+    @thread.kill! if @thread
+    @thread = nil
     @socket.close
     @socket = nil
   end
@@ -382,6 +387,12 @@ module Hotline
       hlc = nil
     end
     return hlc
+  end
+  
+  def Hotline.disconnect(session)
+    hlc = client_for(session)
+    hlc.close if hlc && hlc.connected?
+    HOTLINE_CONNECTIONS[session.session_id] = nil    
   end
 
   def Hotline.login(session, host, port, username, password)
