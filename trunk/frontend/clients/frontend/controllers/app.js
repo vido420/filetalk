@@ -45,6 +45,9 @@ Frontend.appController = SC.Object.create(
 				json = eval(json);
 				var clearUsers = -1;
 				var records = [];
+				var messages = Frontend.ChatMessage.findAll();
+				var nextMessageId = (messages && messages.length > 0 ? messages[messages.length - 1].guid + 1 : 1);
+				var hadMessages = false;
 				for (var i = 0; i < json.length; i++) {
 					var record = json[i];
 					if (record.recordType == 'clear_userlist') {
@@ -68,6 +71,9 @@ Frontend.appController = SC.Object.create(
 									break;
 								}
 							}
+							record.guid = nextMessageId;
+							nextMessageId++;
+							hadMessages = true;
 						} else if (record.recordType == 'user') {
 							record.recordType = Frontend.User;
 							if (record.status > 1) {
@@ -80,8 +86,17 @@ Frontend.appController = SC.Object.create(
 					}
 				}
 				SC.Store.updateRecords(records);
-				Frontend.chatHistoryController.set('content', Frontend.ChatMessage.collection().refresh());
 			  	Frontend.userlistController.set('content', Frontend.User.collection().refresh());
+				if (hadMessages) {
+					Frontend.chatHistoryController.set('content', Frontend.ChatMessage.collection().refresh());
+					var messages = Frontend.ChatMessage.findAll();
+					if (messages && messages.length > 0) {
+						var chatView = SC.page.getPath('chatView.chatHistoryScrollView.chatHistoryView');
+						if (chatView) {
+							chatView.scrollToContent(messages[messages.length - 1]);
+						}
+					}
+				}
 			},
 		   	onFailure: function() {
 				Frontend.appController.get('_timer').set('isPaused', true);
