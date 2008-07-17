@@ -42,12 +42,14 @@ Frontend.NavigationView = SC.View.extend(
 	},
 
 	valueObserver: function() {
+		var connectName = (this.get('value') == 'connection' ? 'Connect' : 'Disconnect');
+		var connectAction = (this.get('value') == 'connection' ? '' : 'Frontend.appController.disconnect();');
 		var items = [
 			{id:'chat', action:'Frontend.appController.notImplemented();', name:'Chat'},
 			{id:'private', action:'Frontend.appController.notImplemented();', name:'Private'},
 			{id:'files', action:'Frontend.appController.notImplemented();', name:'Files'},
 			{id:'news', action:'Frontend.appController.notImplemented();', name:'News'},
-			{id:'connection', action:'Frontend.appController.notImplemented();', name:'Connect'},
+			{id:'connection', action: connectAction, name: connectName},
 		];
 		this.set('innerHTML', this.formatter(items, this));
 	}.observes('value'),

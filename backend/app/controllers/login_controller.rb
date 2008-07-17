@@ -10,4 +10,8 @@ class LoginController < ApplicationController
       render :text => hlc.nick and return
     end
   end
+  
+  def logout
+    Hotline::disconnect(session)
+  end
 end

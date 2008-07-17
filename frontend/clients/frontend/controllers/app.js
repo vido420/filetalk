@@ -128,4 +128,19 @@ Frontend.appController = SC.Object.create(
 			}
 		});	
 	},
+	disconnect: function() {
+		var confirmed = confirm("Are you sure you want to disconnect?");
+		if (!confirmed) { return; }
+		Frontend.appController.get('_timer').set('isPaused', true);
+		var request = new Ajax.Request('/backend/close', {
+			method: 'get',
+			evalJS: false,
+			evalJSON: false,
+			onComplete: function(response) {
+				Frontend.appController.set('tab', 'connection');
+				Frontend.ChatMessage.removeAll();
+				Frontend.User.removeAll();
+			}
+		});
+	},
 }) ;

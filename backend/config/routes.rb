@@ -35,6 +35,7 @@ ActionController::Routing::Routes.draw do |map|
 
   # See how all your routes lay out with "rake routes"
 
+  map.connect 'backend/close',  :controller => 'login', :action => 'logout'
   map.connect 'backend/:controller/:action/:id'
 
   # Install the default routes as the lowest priority.
