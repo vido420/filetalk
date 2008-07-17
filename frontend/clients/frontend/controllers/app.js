@@ -43,8 +43,8 @@ Frontend.appController = SC.Object.create(
 			onSuccess: function(response) {
 				var json = '' + response.transport.responseText;
 				json = eval(json);
-				var clearUsers = -1;
 				var records = [];
+				var users = Frontend.User.findAll();
 				var messages = Frontend.ChatMessage.findAll();
 				var nextMessageId = (messages && messages.length > 0 ? messages[messages.length - 1].guid + 1 : 1);
 				var hadMessages = false;
@@ -55,6 +55,10 @@ Frontend.appController = SC.Object.create(
 					} else if (record.recordType == 'user_left') {
 						var user = Frontend.User.find(record.guid);
 						if (user != null) {
+							records.push({recordType: Frontend.ChatMessage, guid: nextMessageId,
+									  	  message: '&nbsp;<<< ' + user.get('nick') +' has left >>>'});
+							nextMessageId++;
+							hadMessages = true;
 							SC.Store.removeRecord(user);
 						}
 					} else {
@@ -80,6 +84,21 @@ Frontend.appController = SC.Object.create(
 								record.icon = '/images/adminuser.png';								
 							} else {
 								record.icon = '/images/reguser.png';
+							}
+							var user = Frontend.User.find(record.guid);
+							if (user) {
+								if (user.get('nick') != record.nick) {
+									records.push({recordType: Frontend.ChatMessage, guid: nextMessageId,
+											  	  message: '&nbsp;<<< ' + user.get('nick') +' is now known as ' + record.nick + ' >>>'});
+									nextMessageId++;
+									hadMessages = true;
+								}
+							} else if (users && users.length > 0) {
+								/* Don't display these when users is empty => aka when just joining. */
+								records.push({recordType: Frontend.ChatMessage, guid: nextMessageId,
+										  	  message: '&nbsp;<<< ' + record.nick +' has joined >>>'});
+								nextMessageId++;
+								hadMessages = true;
 							}
 						}
 						records.push(record);
