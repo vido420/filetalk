@@ -41,7 +41,7 @@ end
 HotlineUser = Struct.new(:socket, :nick, :icon, :status)
 
 class TransactionObject
-  CHAT = 101
+  MESSAGE = 101
   NICK = 102
   SOCKET = 103
   ICON = 104
@@ -74,6 +74,7 @@ class Transaction
   ID_CHAT = 105
   ID_CHAT_IN = 106
   ID_LOGIN = 107
+  ID_SEND_PM = 108
   ID_AGREE = 121
   ID_GETUSERLIST = 300
   ID_USERCHANGE = 301
@@ -188,8 +189,8 @@ class HotlineClient
 
   def handle_chat_transaction(chat_transaction)
     chat_transaction.objects.each do |object|
-      if object.id == TransactionObject::CHAT
-        add_event(TransactionObject::CHAT, object.data[1..-1].to_s.to_utf8)
+      if object.id == TransactionObject::MESSAGE
+        add_event(TransactionObject::MESSAGE, object.data[1..-1].to_s.to_utf8)
       end
     end
   end
@@ -333,15 +334,23 @@ class HotlineClient
   
   def send_chat(message)
     transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_CHAT, @task_number)
-    transaction << TransactionObject.new(TransactionObject::CHAT, message)
+    transaction << TransactionObject.new(TransactionObject::MESSAGE, message)
     @socket.write(transaction.pack)
     @task_number += 1
   end
   
   def send_emote(message)
     transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_CHAT, @task_number)
-    transaction << TransactionObject.new(TransactionObject::CHAT, message)
+    transaction << TransactionObject.new(TransactionObject::MESSAGE, message)
     transaction << TransactionObject.new(TransactionObject::PARAMETER, [1].pack('n'))
+    @socket.write(transaction.pack)
+    @task_number += 1
+  end
+
+  def send_pm(to_socket, message)
+    transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_SEND_PM, @task_number)
+    transaction << TransactionObject.new(TransactionObject::SOCKET, [to_socket].pack('N'))
+    transaction << TransactionObject.new(TransactionObject::MESSAGE, message)
     @socket.write(transaction.pack)
     @task_number += 1
   end

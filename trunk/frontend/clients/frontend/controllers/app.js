@@ -61,7 +61,6 @@ Frontend.appController = SC.Object.create(
 							SC.Store.removeRecord(user);
 						}
 					} else if (record.recordType == 'chat') {
-						//	record.recordType = Frontend.ChatMessage;
 						var msg = record.message.escapeHTML();
 						for (var i = 0; i < msg.length; i++) {
 							if (msg.charAt(i) != ' ') {
