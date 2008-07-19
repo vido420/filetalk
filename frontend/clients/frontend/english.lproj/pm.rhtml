@@ -1,0 +1,19 @@
+<% view :privateMessageDialog, :pane => :dialog, :visible => false, :width => 400 do %>
+	<h4><%= label_view :bind => { :value => 'Frontend.privateMessageController.dialogHeader' } %></h4>
+	<div>
+	<%= text_area_view :messageField, :outlet => true, :width => 390, :height => 250 %>
+	</div>
+	<div>&nbsp;</div>
+	<div class="buttons">
+		<%= button_view :outlet => true,
+			:title => loc(%(NameDialog_Cancel)),
+			:cancel => true,
+			:width => 40,
+			:action => 'Frontend.privateMessageController.hideDialog' %>
+		<%= button_view :outlet => true,
+			:title => loc(%(NameDialog_OK)),
+			:default => true,
+			:width => 40,
+			:action => 'Frontend.privateMessageController.send' %>
+	</div>
+<% end %>
