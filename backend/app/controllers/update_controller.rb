@@ -17,6 +17,9 @@ class UpdateController < ApplicationController
                   :nick => event.data.nick, :status => event.data.status }.to_json
       elsif event.type == TransactionObject::USER_LEFT
         text += { :recordType => 'user_left', :guid => event.data.socket }.to_json
+      elsif event.type == TransactionObject::PRIVATE_MESSAGE
+        obj = event.data
+        text += { :recordType => 'pm', :socket => obj[0], :nick => obj[1], :message => obj[2] }.to_json
       end
       text += ','
     end

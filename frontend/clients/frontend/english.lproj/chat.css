@@ -21,6 +21,17 @@ div#chat_main div#chat_history_scroll_view div#chat_history_view div {
 div#chat_main div#chat_history_scroll_view div#chat_history_view div.info {
 	color: #FF0000;
 }
+div#chat_main div#chat_history_scroll_view div#chat_history_view div.pm div.head {
+	font-style:italic;
+}
+div#chat_main div#chat_history_scroll_view div#chat_history_view div.pm div.msg {
+	margin-left:8px;
+	margin-right:8px;
+	padding-left:2px;
+	padding-right:2px;
+	border:1px solid #d4d4d4;
+	background-color:#FAFAFA;
+}
 div#chat_main div#chat_message {
 	padding-top: 5px;
 }
@@ -32,7 +43,7 @@ div#content .admin {
 	color: #AA101F;
 }
 div#userlist_scroll_view {
-	border: 1px solid #d4d4d4;	
+	border: 1px solid #d4d4d4;
 	height: 330px;
 }
 div#userlist_view div.sel {

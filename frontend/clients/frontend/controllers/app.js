@@ -73,6 +73,14 @@ Frontend.appController = SC.Object.create(
 						}
 						chatHTML += '<div class="msg">' + msg + '</div>';
 						hadMessages = true;
+					} else if (record.recordType == 'pm') {
+						chatHTML += '<div class="pm">';
+						chatHTML += '<div class="head">';
+						chatHTML += 'Private Message from ' + record.nick.escapeHTML() + ':';
+						chatHTML += '</div>';
+						chatHTML += '<div class="msg">' + record.message.escapeHTML() + '</div>';
+						chatHTML += '</div>';
+						hadMessages = true;
 					} else {
 						if (record.recordType == 'user') {
 							record.recordType = Frontend.User;
