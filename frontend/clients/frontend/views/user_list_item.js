@@ -34,7 +34,7 @@ Frontend.UserListItemView = SC.ListItemView.extend(
 			status = 'color' + status;
 		}
 		html.push('<span class="sc-label ' + status + '">');
-		html.push(label || '');
+		html.push((label || '').escapeHTML());
 		html.push('</span>');
 		return html.join('');    
 	},

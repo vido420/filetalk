@@ -1,11 +1,8 @@
 <% view :chatView do %>
 <div id="chat_main">
 	<% scroll_view :chat_history_scroll_view, :outlet => true do %>
-		<%= list_view :chat_history_view, :outlet => true,
-			:content_value_key => 'message',
-			:bind => {
-				:content => 'Frontend.chatHistoryController.arrangedObjects'
-			} %>
+		<% view :chat_history_view, :outlet => true do %>
+		<% end %>
 	<% end %>
 	<div id="chat_message">
 		<% form_view :chatForm, :outlet => true do %>

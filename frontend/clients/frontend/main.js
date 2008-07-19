@@ -21,7 +21,6 @@ function main() {
   // ex: Frontend.contacts.refresh() ;
 
   Frontend.userlistController.set('content', Frontend.User.collection().refresh());
-  Frontend.chatHistoryController.set('content', Frontend.ChatMessage.collection().refresh());
 
   // Step 2: Instantiate Your Views
   // The default code just activates all the views you have on the page. If
