@@ -20,6 +20,7 @@
 	<%= list_view :userlist_view, :outlet => true,
 		:example_view => 'Frontend.UserListItemView',
 		:content_value_key => 'nick', :content_icon_key => 'icon',
+		:action => 'Frontend.privateMessageController.sendPM',
 		:bind => {
 			:content => 'Frontend.userlistController.arrangedObjects',
 			:selection => 'Frontend.userlistController.selection'

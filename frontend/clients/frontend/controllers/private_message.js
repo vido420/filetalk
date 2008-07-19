@@ -26,6 +26,7 @@ Frontend.privateMessageController = SC.Object.create(
 			Frontend.privateMessageController.set('dialogHeader', 'Private Message to: ' + selection[0].get('nick'));
 			SC.page.getPath('privateMessageDialog.messageField').set('value', '');
 			SC.page.get('privateMessageDialog').set('isVisible', true);
+			SC.page.getPath('privateMessageDialog.messageField').rootElement.select();
 		}
 	},
 	hideDialog: function() {
