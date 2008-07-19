@@ -49,6 +49,7 @@ class TransactionObject
   PASSWORD = 106
   PARAMETER = 109
   STATUS = 112
+  STATUS_FLAGS = 113
   VERSION = 160
   SERVER_NAME = 162
   USER = 300
@@ -293,7 +294,9 @@ class HotlineClient
         transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_AGREE, @task_number)
         transaction << TransactionObject.new(TransactionObject::NICK, @nick)
         transaction << TransactionObject.new(TransactionObject::ICON, "\0\0")
-        transaction << TransactionObject.new(113, "\0\0")
+        # 1 = refuses private messages
+        # 2 = refuses private chat
+        transaction << TransactionObject.new(TransactionObject::STATUS_FLAGS, "\0\3")
         @socket.write(transaction.pack)
         @task_number += 1
       end
