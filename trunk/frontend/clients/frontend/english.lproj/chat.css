@@ -11,16 +11,15 @@ div#chat_main div#chat_history_scroll_view {
 	border: 1px solid #d4d4d4;
 	height: 304px;
 	width: 488px;
+	background: #fff;
 }
-div#chat_main div#chat_history_scroll_view div#chat_history_view {
-	height: 303px;
-}
-div#chat_history_view div.sc-list-item-view {
-	padding:0;
-}
-div#chat_history_view div.sc-list-item-view span.sc-label {
+div#chat_main div#chat_history_scroll_view div#chat_history_view div {
 	font-family: Monaco, "Courier New", monospace;
 	font-size: 11px;
+	padding-left: 2px;
+}
+div#chat_main div#chat_history_scroll_view div#chat_history_view div.info {
+	color: #FF0000;
 }
 div#chat_main div#chat_message {
 	padding-top: 5px;

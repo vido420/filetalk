@@ -45,9 +45,9 @@ Frontend.appController = SC.Object.create(
 				json = eval(json);
 				var records = [];
 				var users = Frontend.User.findAll();
-				var messages = Frontend.ChatMessage.findAll();
-				var nextMessageId = (messages && messages.length > 0 ? messages[messages.length - 1].guid + 1 : 1);
 				var hadMessages = false;
+				var chatView = SC.page.getPath('chatView.chatHistoryScrollView.chatHistoryView');
+				var chatHTML = chatView.get('innerHTML');
 				for (var i = 0; i < json.length; i++) {
 					var record = json[i];
 					if (record.recordType == 'clear_userlist') {
@@ -55,32 +55,29 @@ Frontend.appController = SC.Object.create(
 					} else if (record.recordType == 'user_left') {
 						var user = Frontend.User.find(record.guid);
 						if (user != null) {
-							records.push({recordType: Frontend.ChatMessage, guid: nextMessageId,
-									  	  message: '&nbsp;<<< ' + user.get('nick') +' has left >>>'});
-							nextMessageId++;
+							var msg = '<<< ' + user.get('nick') + ' has left >>>';
+							chatHTML += '<div class="info">&nbsp;' + msg.escapeHTML() + '</div>';
 							hadMessages = true;
 							SC.Store.removeRecord(user);
 						}
-					} else {
-						if (record.recordType == 'chat') {
-							record.recordType = Frontend.ChatMessage;
-							var msg = record.message;
-							for (var i = 0; i < msg.length; i++) {
-								if (msg.charAt(i) != ' ') {
-									msg = msg.substring(i);
-									for (; i > 0; i--) {
-										msg = '&nbsp;' + msg;
-									}
-									record.message = msg;
-									break;
+					} else if (record.recordType == 'chat') {
+						//	record.recordType = Frontend.ChatMessage;
+						var msg = record.message.escapeHTML();
+						for (var i = 0; i < msg.length; i++) {
+							if (msg.charAt(i) != ' ') {
+								msg = msg.substring(i);
+								for (; i > 0; i--) {
+									msg = '&nbsp;' + msg;
 								}
+								break;
 							}
-							record.guid = nextMessageId;
-							nextMessageId++;
-							hadMessages = true;
-						} else if (record.recordType == 'user') {
+						}
+						chatHTML += '<div class="msg">' + msg + '</div>';
+						hadMessages = true;
+					} else {
+						if (record.recordType == 'user') {
 							record.recordType = Frontend.User;
-							if (record.status > 1) {
+							if ((record.status & 2) == 2) {
 								record.icon = '/images/adminuser.png';								
 							} else {
 								record.icon = '/images/reguser.png';
@@ -88,16 +85,14 @@ Frontend.appController = SC.Object.create(
 							var user = Frontend.User.find(record.guid);
 							if (user) {
 								if (user.get('nick') != record.nick) {
-									records.push({recordType: Frontend.ChatMessage, guid: nextMessageId,
-											  	  message: '&nbsp;<<< ' + user.get('nick') +' is now known as ' + record.nick + ' >>>'});
-									nextMessageId++;
+									var msg = '<<< ' + user.get('nick') + ' is now known as ' + record.nick + ' >>>';
+									chatHTML += '<div class="info">&nbsp;' + msg.escapeHTML() + '</div>';
 									hadMessages = true;
 								}
 							} else if (users && users.length > 0) {
 								/* Don't display these when users is empty => aka when just joining. */
-								records.push({recordType: Frontend.ChatMessage, guid: nextMessageId,
-										  	  message: '&nbsp;<<< ' + record.nick +' has joined >>>'});
-								nextMessageId++;
+								var msg = '<<< ' + record.nick + ' has joined >>>';
+								chatHTML += '<div class="info">&nbsp;' + msg.escapeHTML() + '</div>';
 								hadMessages = true;
 							}
 						}
@@ -107,13 +102,20 @@ Frontend.appController = SC.Object.create(
 				SC.Store.updateRecords(records);
 			  	Frontend.userlistController.set('content', Frontend.User.collection().refresh());
 				if (hadMessages) {
-					Frontend.chatHistoryController.set('content', Frontend.ChatMessage.collection().refresh());
-					var messages = Frontend.ChatMessage.findAll();
-					if (messages && messages.length > 0) {
-						var chatView = SC.page.getPath('chatView.chatHistoryScrollView.chatHistoryView');
-						if (chatView) {
-							chatView.scrollToContent(messages[messages.length - 1]);
-						}
+					chatView.set('innerHTML', chatHTML);
+					/* Scroll to the bottom or keep same position... */
+					var scrollView = SC.page.getPath('chatView.chatHistoryScrollView').rootElement;
+					var currentHeight = 0;
+
+					if (scrollView.scrollHeight > 0) {
+						currentHeight = scrollView.scrollHeight;
+					} else if (scrollView.offsetHeight > 0) {
+						currentHeight = scrollView.offsetHeight;
+					}
+
+					var height = ((scrollView.style.pixelHeight) ? scrollView.style.pixelHeight : scrollView.offsetHeight);
+				    if (currentHeight - scrollView.scrollTop - height < 25) {
+				        scrollView.scrollTop = currentHeight;
 					}
 				}
 			},
@@ -121,7 +123,7 @@ Frontend.appController = SC.Object.create(
 				Frontend.appController.get('_timer').set('isPaused', true);
 				var closeAction = function() {
 					Frontend.appController.set('tab', 'connection');
-					Frontend.ChatMessage.removeAll();
+					SC.page.getPath('chatView.chatHistoryScrollView.chatHistoryView').set('innerHTML', '');
 					Frontend.User.removeAll();
 				}
 				Frontend.errorMessageController.showErrorDialog("Connection_Lost".loc(), "Connection_Lost_Message".loc(), closeAction);
@@ -138,7 +140,7 @@ Frontend.appController = SC.Object.create(
 			evalJSON: false,
 			onComplete: function(response) {
 				Frontend.appController.set('tab', 'connection');
-				Frontend.ChatMessage.removeAll();
+				SC.page.getPath('chatView.chatHistoryScrollView.chatHistoryView').set('innerHTML', '');
 				Frontend.User.removeAll();
 			}
 		});
