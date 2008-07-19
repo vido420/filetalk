@@ -41,7 +41,9 @@ end
 HotlineUser = Struct.new(:socket, :nick, :icon, :status)
 
 class TransactionObject
+  ERROR_MSG = 100
   MESSAGE = 101
+  PRIVATE_MESSAGE = -101 # not part of HL protocol
   NICK = 102
   SOCKET = 103
   ICON = 104
@@ -71,8 +73,9 @@ class Transaction
   REQUEST = 0
   REPLY = 1
 
-  ID_CHAT = 105
-  ID_CHAT_IN = 106
+  ID_PRIVATE_MESSAGE = 104
+  ID_SEND_CHAT = 105
+  ID_CHAT = 106
   ID_LOGIN = 107
   ID_SEND_PM = 108
   ID_AGREE = 121
@@ -110,6 +113,9 @@ class Transaction
         objtype = io.read(2).unpack('n')[0]
         objlen = io.read(2).unpack('n')[0]
         data = io.read(objlen)
+        if (objtype == TransactionObject::ERROR_MSG)
+				  puts "Error: " + data.to_s
+				end
         @objects << TransactionObject.new(objtype, data)
       end
     end
@@ -267,6 +273,24 @@ class HotlineClient
     end
   end
 
+  def handle_private_message_transaction(transaction)
+    socket = nil
+    nick = nil
+    message = nil
+    transaction.objects.each do |object|
+      if object.id == TransactionObject::SOCKET
+        socket = read_number(object.data)
+      elsif object.id == TransactionObject::NICK
+        nick = object.data.to_s
+      elsif object.id == TransactionObject::MESSAGE
+        message = object.data.to_s
+      end
+    end
+    if socket && nick && message
+      add_event(TransactionObject::PRIVATE_MESSAGE, [socket, nick, message])
+    end
+  end
+
   def run
     loop do
       transaction = Transaction.new(0,0,0)
@@ -289,15 +313,17 @@ class HotlineClient
         handle_userchange_transaction(transaction)
       elsif transaction.id == Transaction::ID_USERLEAVE
         handle_userleave_transaction(transaction)
-      elsif transaction.id == Transaction::ID_CHAT_IN
+      elsif transaction.id == Transaction::ID_CHAT
         handle_chat_transaction(transaction)
+      elsif transaction.id == Transaction::ID_PRIVATE_MESSAGE
+        handle_private_message_transaction(transaction)
       elsif transaction.id == 109
         transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_AGREE, @task_number)
         transaction << TransactionObject.new(TransactionObject::NICK, @nick)
         transaction << TransactionObject.new(TransactionObject::ICON, "\0\0")
         # 1 = refuses private messages
         # 2 = refuses private chat
-        transaction << TransactionObject.new(TransactionObject::STATUS_FLAGS, "\0\3")
+        transaction << TransactionObject.new(TransactionObject::STATUS_FLAGS, "\0\2")
         @socket.write(transaction.pack)
         @task_number += 1
       end
@@ -333,14 +359,14 @@ class HotlineClient
   end
   
   def send_chat(message)
-    transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_CHAT, @task_number)
+    transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_SEND_CHAT, @task_number)
     transaction << TransactionObject.new(TransactionObject::MESSAGE, message)
     @socket.write(transaction.pack)
     @task_number += 1
   end
   
   def send_emote(message)
-    transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_CHAT, @task_number)
+    transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_SEND_CHAT, @task_number)
     transaction << TransactionObject.new(TransactionObject::MESSAGE, message)
     transaction << TransactionObject.new(TransactionObject::PARAMETER, [1].pack('n'))
     @socket.write(transaction.pack)
