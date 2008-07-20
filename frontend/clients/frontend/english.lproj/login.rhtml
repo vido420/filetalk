@@ -8,8 +8,8 @@
 			<span class="input_label"><label for="loginPassword"><%= loc(%(Login_Password)) %>: </label></span>
 		</div>
 		<div class="col2">
-			<%= text_field_view :loginName, :outlet => true, :hint => loc(%(Login_Name)), :validate => 'not-empty' %>
-			<%= password_field_view :loginPassword, :outlet => true, :hint => loc(%(Login_Password)), :validate => 'not-empty' %>
+			<%= text_field_view :loginName, :outlet => true, :hint => loc(%(Login_Name)) %>
+			<%= password_field_view :loginPassword, :outlet => true, :hint => loc(%(Login_Password)) %>
 		</div>
 	</div>
 	<div class="group">

@@ -39,6 +39,7 @@ Frontend.chatController = SC.Object.create(
 		var userNick = Frontend.chatController.get('userNick');
 		SC.page.get('nameDialog').set('isVisible', true);
 		SC.page.getPath('nameDialog.nameForm.nameField').rootElement.value = userNick;
+		SC.page.getPath('nameDialog.nameForm.nameField').rootElement.select();
 	},
 	hideChangeNickDialog: function() {
 		SC.page.get('nameDialog').set('isVisible', false);

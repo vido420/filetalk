@@ -99,7 +99,7 @@ Frontend.appController = SC.Object.create(
 										chatHTML += '<div class="info">&nbsp;' + msg.escapeHTML() + '</div>';
 										hadMessages = true;
 									}
-								} else if (users && users.length > 0) {
+								} else /* if (users && users.length > 0) */ {
 									/* Don't display these when users is empty => aka when just joining. */
 									var msg = '<<< ' + record.nick + ' has joined >>>';
 									chatHTML += '<div class="info">&nbsp;' + msg.escapeHTML() + '</div>';
