@@ -6,7 +6,8 @@ class UpdateController < ApplicationController
     hlc = Hotline::client_for(session)
     render :text => 'Not logged in.', :status => 500 and return if hlc.nil?
     text = '['
-    while hlc.has_next_event?
+    done = !hlc.has_next_event?
+    while not done
       event = hlc.next_event
       if event.type == TransactionObject::MESSAGE
         text += { :recordType => 'chat', :message => event.data }.to_json
@@ -22,6 +23,7 @@ class UpdateController < ApplicationController
         text += { :recordType => 'pm', :socket => obj[0], :nick => obj[1], :message => obj[2] }.to_json
       end
       text += ','
+      done = !hlc.has_next_event?
     end
     text += ']'
     render :text => text and return
