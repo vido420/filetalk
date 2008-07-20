@@ -12,6 +12,7 @@ div#chat_main div#chat_history_scroll_view {
 	height: 304px;
 	width: 488px;
 	background: #fff;
+	overflow-y: scroll;
 }
 div#chat_main div#chat_history_scroll_view div#chat_history_view div {
 	font-family: Monaco, "Courier New", monospace;
@@ -31,6 +32,7 @@ div#chat_main div#chat_history_scroll_view div#chat_history_view div.pm div.msg 
 	padding-right:2px;
 	border:1px solid #d4d4d4;
 	background-color:#FAFAFA;
+	white-space: pre;
 }
 div#chat_main div#chat_message {
 	padding-top: 5px;
@@ -45,6 +47,7 @@ div#content .admin {
 div#userlist_scroll_view {
 	border: 1px solid #d4d4d4;
 	height: 330px;
+	overflow-y: scroll;
 }
 div#userlist_view div.sel {
 	background-color: #C7D3E9;
