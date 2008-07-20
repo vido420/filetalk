@@ -17,9 +17,13 @@ Frontend.loginController = SC.Object.create(
 /** @scope Frontend.loginController */ {
 
 	login: function() {
-		var username = SC.page.getPath('loginView.loginForm.loginName.value');
-		var password = SC.page.getPath('loginView.loginForm.loginPassword.value');
-		Frontend.chatController.set('userNick', username);
+		var loginName = SC.page.getPath('loginView.loginForm.loginName');
+		var loginPassword = SC.page.getPath('loginView.loginForm.loginPassword');
+		var username = loginName.get('value');
+		var password = loginPassword.get('value');
+		Frontend.chatController.set('userNick', (username && username.length > 0 ? username : 'Guest'));
+		loginName.rootElement.blur();
+		loginPassword.rootElement.blur();
 		SC.page.get('loginProgresDialog').set('isVisible', true);
 		var request = new Ajax.Request('/backend/login', {
 			method: 'GET',
