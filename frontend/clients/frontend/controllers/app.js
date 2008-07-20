@@ -112,8 +112,8 @@ Frontend.appController = SC.Object.create(
 					SC.Store.updateRecords(records);
 			  		Frontend.userlistController.set('content', Frontend.User.collection().refresh());
 					if (hadMessages) {
-						chatView.set('innerHTML', chatHTML);
 						/* Scroll to the bottom or keep same position... */
+						var shouldScroll = false;
 						var scrollView = SC.page.get('chatHistoryScrollView').rootElement;
 						var currentHeight = 0;
 
@@ -124,7 +124,16 @@ Frontend.appController = SC.Object.create(
 						}
 
 						var height = ((scrollView.style.pixelHeight) ? scrollView.style.pixelHeight : scrollView.offsetHeight);
-				    	if (currentHeight - scrollView.scrollTop - height < 25) {
+				    	if (currentHeight - scrollView.scrollTop - height < 5) {
+				        	shouldScroll = true;
+						}
+						chatView.set('innerHTML', chatHTML);
+						if (shouldScroll) {
+							if (scrollView.scrollHeight > 0) {
+								currentHeight = scrollView.scrollHeight;
+							} else if (scrollView.offsetHeight > 0) {
+								currentHeight = scrollView.offsetHeight;
+							}
 				        	scrollView.scrollTop = currentHeight;
 						}
 					}
