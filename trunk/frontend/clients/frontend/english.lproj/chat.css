@@ -14,6 +14,9 @@ div#chat_main div#chat_history_scroll_view {
 	background: #fff;
 	overflow-y: scroll;
 }
+div#chat_main div#chat_history_scroll_view div#chat_history_view {
+	width: 473px;
+}
 div#chat_main div#chat_history_scroll_view div#chat_history_view div {
 	font-family: Monaco, "Courier New", monospace;
 	font-size: 11px;

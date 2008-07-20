@@ -203,7 +203,6 @@ class HotlineClient
 
   def handle_userlist_transaction(userlist_transaction)
     @users = []
-#    add_event('UserList', nil)
     userlist_transaction.objects.each do |object|
       # socket, icon, status, length of nick (all shorts)
       # nick
@@ -250,7 +249,7 @@ class HotlineClient
         user = HotlineUser.new(socket, nick, icon, status)
         @users[user.socket] = user
       else
-        user.nick = nick unless nick.nil?
+        user.nick = nick.to_utf8 unless nick.nil?
         user.icon = icon unless icon.nil?
         user.status = status unless status.nil?
       end
@@ -287,7 +286,7 @@ class HotlineClient
       end
     end
     if socket && nick && message
-      add_event(TransactionObject::PRIVATE_MESSAGE, [socket, nick, message])
+      add_event(TransactionObject::PRIVATE_MESSAGE, [socket, nick.to_utf8, message.to_utf8])
     end
   end
 
@@ -360,14 +359,14 @@ class HotlineClient
   
   def send_chat(message)
     transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_SEND_CHAT, @task_number)
-    transaction << TransactionObject.new(TransactionObject::MESSAGE, message)
+    transaction << TransactionObject.new(TransactionObject::MESSAGE, message.to_macroman)
     @socket.write(transaction.pack)
     @task_number += 1
   end
   
   def send_emote(message)
     transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_SEND_CHAT, @task_number)
-    transaction << TransactionObject.new(TransactionObject::MESSAGE, message)
+    transaction << TransactionObject.new(TransactionObject::MESSAGE, message.to_macroman)
     transaction << TransactionObject.new(TransactionObject::PARAMETER, [1].pack('n'))
     @socket.write(transaction.pack)
     @task_number += 1
@@ -376,7 +375,7 @@ class HotlineClient
   def send_pm(to_socket, message)
     transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_SEND_PM, @task_number)
     transaction << TransactionObject.new(TransactionObject::SOCKET, [to_socket].pack('N'))
-    transaction << TransactionObject.new(TransactionObject::MESSAGE, message)
+    transaction << TransactionObject.new(TransactionObject::MESSAGE, message.to_macroman)
     @socket.write(transaction.pack)
     @task_number += 1
   end
@@ -384,7 +383,7 @@ class HotlineClient
   def set_nick(nick)
     @nick = nick
     transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_CHANGE_NICK, @task_number)
-    transaction << TransactionObject.new(TransactionObject::NICK, nick)
+    transaction << TransactionObject.new(TransactionObject::NICK, nick.to_macroman)
     transaction << TransactionObject.new(TransactionObject::ICON, "\0\0")
     @socket.write(transaction.pack)
     @task_number += 1
