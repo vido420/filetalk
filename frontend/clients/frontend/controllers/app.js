@@ -73,6 +73,8 @@ Frontend.appController = SC.Object.create(
 							}
 							chatHTML += '<div class="msg">' + msg + '</div>';
 							hadMessages = true;
+						} else if (record.recordType == 'error') {
+							Frontend.errorMessageController.showErrorDialog("Connection_Lost".loc(), record.message, this.get('disconnectAction'));
 						} else if (record.recordType == 'pm') {
 							chatHTML += '<div class="pm">';
 							chatHTML += '<div class="head">';
@@ -133,14 +135,15 @@ Frontend.appController = SC.Object.create(
 			},
 		   	onFailure: function() {
 				Frontend.appController.set('isPolling', false);
-				var closeAction = function() {
-					Frontend.appController.set('tab', 'connection');
-					SC.page.getPath('chatView.chatHistoryScrollView.chatHistoryView').set('innerHTML', '');
-					Frontend.User.removeAll();
-				}
-				Frontend.errorMessageController.showErrorDialog("Connection_Lost".loc(), "Connection_Lost_Message".loc(), closeAction);
+				Frontend.errorMessageController.showErrorDialog("Connection_Lost".loc(),
+					"Connection_Lost_Message".loc(), this.get('disconnectAction'));
 			}
 		});	
+	},
+	disconnectAction: function() {
+		Frontend.appController.set('tab', 'connection');
+		SC.page.getPath('chatView.chatHistoryScrollView.chatHistoryView').set('innerHTML', '');
+		Frontend.User.removeAll();	
 	},
 	disconnect: function() {
 		var confirmed = confirm("Are you sure you want to disconnect?");
@@ -150,11 +153,7 @@ Frontend.appController = SC.Object.create(
 			method: 'get',
 			evalJS: false,
 			evalJSON: false,
-			onComplete: function(response) {
-				Frontend.appController.set('tab', 'connection');
-				SC.page.getPath('chatView.chatHistoryScrollView.chatHistoryView').set('innerHTML', '');
-				Frontend.User.removeAll();
-			}
+			onComplete: this.get('disconnectAction')
 		});
 	},
 }) ;

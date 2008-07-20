@@ -12,6 +12,6 @@ class LoginController < ApplicationController
   end
   
   def logout
-    Hotline::disconnect(session)
+    Hotline::disconnect(session) and return
   end
 end
