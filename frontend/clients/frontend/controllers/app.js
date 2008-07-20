@@ -40,13 +40,14 @@ Frontend.appController = SC.Object.create(
 			evalJS: false,
 			evalJSON: false,
 			onSuccess: function(response) {
+			try {
 				var json = '' + response.transport.responseText;
 				json = eval(json);
 				if (json) {
 					var records = [];
 					var users = Frontend.User.findAll();
 					var hadMessages = false;
-					var chatView = SC.page.getPath('chatView.chatHistoryScrollView.chatHistoryView');
+					var chatView = SC.page.get('chatHistoryView');
 					var chatHTML = chatView.get('innerHTML');
 					for (var i = 0; i < json.length; i++) {
 						var record = json[i];
@@ -113,7 +114,7 @@ Frontend.appController = SC.Object.create(
 					if (hadMessages) {
 						chatView.set('innerHTML', chatHTML);
 						/* Scroll to the bottom or keep same position... */
-						var scrollView = SC.page.getPath('chatView.chatHistoryScrollView').rootElement;
+						var scrollView = SC.page.get('chatHistoryScrollView').rootElement;
 						var currentHeight = 0;
 
 						if (scrollView.scrollHeight > 0) {
@@ -132,17 +133,22 @@ Frontend.appController = SC.Object.create(
 				if (isPolling) {
 					var timer = SC.Timer.schedule({ target: Frontend.appController, action: 'poll', interval: 333 });
 				}
+			} catch (err) {
+				Frontend.appController.set('isPolling', false);
+				Frontend.errorMessageController.showErrorDialog("Connection_Lost".loc(),
+					"Connection_Lost_Message".loc(), Frontend.appController.get('disconnectAction'));
+			}
 			},
 		   	onFailure: function() {
 				Frontend.appController.set('isPolling', false);
 				Frontend.errorMessageController.showErrorDialog("Connection_Lost".loc(),
-					"Connection_Lost_Message".loc(), this.get('disconnectAction'));
+					"Connection_Lost_Message".loc(), Frontend.appController.get('disconnectAction'));
 			}
 		});	
 	},
 	disconnectAction: function() {
 		Frontend.appController.set('tab', 'connection');
-		SC.page.getPath('chatView.chatHistoryScrollView.chatHistoryView').set('innerHTML', '');
+		SC.page.get('chatHistoryView').set('innerHTML', '');
 		Frontend.User.removeAll();	
 	},
 	disconnect: function() {
