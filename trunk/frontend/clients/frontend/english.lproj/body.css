@@ -21,6 +21,10 @@ div#content {
     height: 366px;
 }
 
+textarea.userInfoField {
+	font-family: Monaco, "Courier New", monospace;
+}
+
 div#errorMessage {
 	margin-top:4px;
 	margin-bottom:2px;
