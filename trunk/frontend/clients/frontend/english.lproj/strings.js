@@ -25,7 +25,9 @@ Object.extend(String.English,{
 	"NotImplemented_Title": "Not Implemented",
 	"NotImplemented_Message": "The feature you tried to use is not yet implemented.",
 
-	'Error_Close': 'Close',
+	"Error_Close": "Close",
+
+	"Server_Error": "Error from Server:",
 
 	"Chat_Enter": "Enter Message",
 	"Chat_Send": "Send",

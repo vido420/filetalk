@@ -18,6 +18,7 @@
 </div>
 <% scroll_view :userlist_scroll_view do %>
 	<%= list_view :userlist_view,
+		:outlet => true,
 		:example_view => 'Frontend.UserListItemView',
 		:content_value_key => 'nick', :content_icon_key => 'icon',
 		:action => 'Frontend.privateMessageController.sendPM',
@@ -39,7 +40,7 @@
 			</a>
 		</li>
 		<li id="tool_userinfo">
-			<a href="javascript: Frontend.appController.notImplemented();">
+			<a href="javascript: Frontend.userlistController.getUserInfo();">
 				<%= loc(%(User_Get_Info)) %>
 			</a>
 		</li>
