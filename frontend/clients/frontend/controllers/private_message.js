@@ -19,7 +19,7 @@ Frontend.privateMessageController = SC.Object.create(
 	sendPM: function() {
 		var selection = Frontend.userlistController.get('selection');
 		if (!selection || selection.length < 1) {
-			alert('Please select user to send a Private Message to.');
+			alert('Please select a user to send a Private Message to.');
 		} else if (selection.length > 1) {
 			alert('You may only send a Private Message to one user at a time.')
 		} else {

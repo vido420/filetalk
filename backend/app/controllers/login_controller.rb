@@ -12,6 +12,7 @@ class LoginController < ApplicationController
   end
   
   def logout
-    Hotline::disconnect(session) and return
+    Hotline::disconnect(session)
+    render :text => "Good Bye." and return
   end
 end

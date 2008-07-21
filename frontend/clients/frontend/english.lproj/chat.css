@@ -53,7 +53,7 @@ div#userlist_scroll_view {
 	height: 330px;
 	overflow-y: scroll;
 }
-div#userlist_view div.sel {
+div#userlist_scroll_view div.userlist_view div.sel {
 	background-color: #C7D3E9;
 	border-color: #C7D3E9;
 	color:#000;

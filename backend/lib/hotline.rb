@@ -56,6 +56,7 @@ class TransactionObject
   SERVER_NAME = 162
   USER = 300
   USER_LEFT = -300 # not part of HL protocol
+  USER_INFO = -666 # not part of the protocol
 
   attr_reader :id, :data
 
@@ -82,7 +83,7 @@ class Transaction
   ID_GETUSERLIST = 300
   ID_USERCHANGE = 301
   ID_USERLEAVE = 302
-  ID_GET_USERINFO = 303
+  ID_GETUSERINFO = 303
   ID_CHANGE_NICK = 304
   ID_USERLIST = 354
 
@@ -290,6 +291,17 @@ class HotlineClient
     end
   end
 
+  def handle_userinfo_transaction(transaction)
+    message = nil
+    transaction.objects.each do |object|
+      if object.id == TransactionObject::MESSAGE
+        message = object.data.to_s
+      end
+    end
+    return unless message
+    add_event(TransactionObject::USER_INFO, message.to_utf8)
+  end
+
   def run
     loop do
       transaction = Transaction.new(0,0,0)
@@ -299,15 +311,19 @@ class HotlineClient
         should_signal = true
       end
       if transaction.is_error
-        close
-        @tasks.synchronize { @task_cond.signal } if should_signal
-        break
+        transaction.objects.each do |object|
+          if object.id == TransactionObject::ERROR_MSG
+            add_event(TransactionObject::ERROR_MSG, object.data.to_s.to_utf8)
+          end
+        end
       elsif transaction.id == Transaction::ID_LOGIN
         handle_login_transaction(transaction)
       elsif transaction.id == Transaction::ID_GETUSERLIST
         handle_userlist_transaction(transaction)
       elsif transaction.id == Transaction::ID_USERLIST
         request_userlist
+      elsif transaction.id == Transaction::ID_GETUSERINFO
+        handle_userinfo_transaction(transaction)
       elsif transaction.id == Transaction::ID_USERCHANGE
         handle_userchange_transaction(transaction)
       elsif transaction.id == Transaction::ID_USERLEAVE
@@ -386,6 +402,14 @@ class HotlineClient
     transaction << TransactionObject.new(TransactionObject::NICK, nick.to_macroman)
     transaction << TransactionObject.new(TransactionObject::ICON, "\0\0")
     @socket.write(transaction.pack)
+    @task_number += 1
+  end
+  
+  def request_user_info(socket)
+    transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_GETUSERINFO, @task_number)
+    transaction << TransactionObject.new(TransactionObject::SOCKET, [socket].pack('N'))
+    @socket.write(transaction.pack)
+    @tasks[@task_number] = Transaction::ID_GETUSERINFO
     @task_number += 1
   end
 

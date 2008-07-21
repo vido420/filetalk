@@ -21,6 +21,10 @@ class UpdateController < ApplicationController
       elsif event.type == TransactionObject::PRIVATE_MESSAGE
         obj = event.data
         text += { :recordType => 'pm', :socket => obj[0], :nick => obj[1], :message => obj[2] }.to_json
+      elsif event.type == TransactionObject::USER_INFO
+        text += { :recordType => 'user_info', :message => event.data }.to_json        
+      elsif event.type == TransactionObject::ERROR_MSG
+        text += { :recordType => 'error', :message => event.data }.to_json        
       end
       text += ','
       done = !hlc.has_next_event?

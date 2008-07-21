@@ -32,5 +32,4 @@ function main() {
   // This will make your app come alive!
 
   SC.page.get('contentView').set('content', SC.page.get('loginView'));
-
 };

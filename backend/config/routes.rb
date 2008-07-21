@@ -37,6 +37,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.connect 'backend/close', :controller => 'login', :action => 'logout'
   map.connect 'backend/pm', :controller => 'chat', :action => 'send_pm'
+  map.connect 'backend/user/info', :controller => 'users', :action => 'info'
   map.connect 'backend/:controller/:action/:id'
 
   # Install the default routes as the lowest priority.

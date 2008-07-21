@@ -75,7 +75,7 @@ Frontend.appController = SC.Object.create(
 							chatHTML += '<div class="msg">' + msg + '</div>';
 							hadMessages = true;
 						} else if (record.recordType == 'error') {
-							Frontend.errorMessageController.showErrorDialog("Connection_Lost".loc(), record.message, this.get('disconnectAction'));
+							Frontend.errorMessageController.showErrorDialog("Server_Error".loc(), record.message, null);
 						} else if (record.recordType == 'pm') {
 							chatHTML += '<div class="pm">';
 							chatHTML += '<div class="head">';
@@ -84,6 +84,8 @@ Frontend.appController = SC.Object.create(
 							chatHTML += '<div class="msg">' + record.message.escapeHTML() + '</div>';
 							chatHTML += '</div>';
 							hadMessages = true;
+						} else if (record.recordType == 'user_info') {
+							Frontend.userlistController.showUserInfoDialog(record.message.escapeHTML());
 						} else {
 							if (record.recordType == 'user') {
 								record.recordType = Frontend.User;
@@ -140,7 +142,7 @@ Frontend.appController = SC.Object.create(
 				}
 				var isPolling = Frontend.appController.get('isPolling');
 				if (isPolling) {
-					var timer = SC.Timer.schedule({ target: Frontend.appController, action: 'poll', interval: 333 });
+					var timer = SC.Timer.schedule({ target: Frontend.appController, action: 'poll', interval: 500 });
 				}
 			} catch (err) {
 				Frontend.appController.set('isPolling', false);
