@@ -16,7 +16,7 @@ Frontend.NavigationView = SC.View.extend(
 /** @scope Frontend.NavigationView.prototype */ {
 
 	init: function() { 
-		sc_super(null);
+		sc_super();
 		this.valueObserver();
 	},
 
