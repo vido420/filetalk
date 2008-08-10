@@ -466,7 +466,6 @@ module Hotline
     return nil unless hlc.connect
     return nil unless hlc.login(username, password)
     HOTLINE_CONNECTIONS[key] = hlc
-    puts "connected as #{key}"
     return hlc
   end
 

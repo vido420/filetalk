@@ -4,8 +4,8 @@ class Update < Application
   
   def index
     headers["Content-Type"] = "text/plain; charset=utf-8"
-    hlc = Hotline::client_for(cookies[:_i_hate_u])
-    return render 'Not logged in.', :status => 500 if hlc.nil?
+    hlc = Hotline::client_for(client_key)
+    return not_logged_in if hlc.nil?
     text = '['
     done = !hlc.has_next_event?
     while not done
