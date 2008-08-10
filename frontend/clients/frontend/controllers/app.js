@@ -33,6 +33,13 @@ Frontend.appController = SC.Object.create(
 			SC.page.get('contentView').set('content', SC.page.get('loginView'));
 		}
 	}.observes('tab'),
+	linkify: function(text) {
+		// TODO: need better regex
+		var regex = /((https?)|(ftp))\:\/\/[^\s]*[^.,">\s\)\]]/g;
+		return text.replace(regex, function(m) {
+			return '<a href="' + m + '" target="_blank">' + m + '</a>';
+		});
+	},
 	isPolling: false,
 	startPolling: function() {
 		this.set('isPolling', true);
@@ -77,6 +84,7 @@ Frontend.appController = SC.Object.create(
 									break;
 								}
 							}
+							msg = Frontend.appController.linkify(msg);
 							chatHTML += '<div class="msg">' + msg + '</div>';
 							hadMessages = true;
 						} else if (record.recordType == 'error') {
@@ -86,7 +94,8 @@ Frontend.appController = SC.Object.create(
 							chatHTML += '<div class="head">';
 							chatHTML += 'Private Message from ' + record.nick.escapeHTML() + ':';
 							chatHTML += '</div>';
-							chatHTML += '<div class="msg">' + record.message.escapeHTML() + '</div>';
+							var msg = Frontend.appController.linkify(record.message.escapeHTML());
+							chatHTML += '<div class="msg">' + msg + '</div>';
 							chatHTML += '</div>';
 							hadMessages = true;
 						} else if (record.recordType == 'user_info') {
