@@ -75,7 +75,7 @@ config :all do |c|
   # Name the build modes that should include fixture data.
   #c[:include_fixtures] = :development
 
-  proxy '/backend', :to => 'localhost:3000'
+  proxy '/backend', :to => 'localhost:4000'
 end
 
 # Add configurations for specific bundles here as well.  Any options you

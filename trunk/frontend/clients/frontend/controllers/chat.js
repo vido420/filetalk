@@ -21,9 +21,8 @@ Frontend.chatController = SC.Object.create(
 		if (msg != null) {
 			var request = new Ajax.Request('/backend/chat', {
 				method: 'GET',
-				parameters: {
-					m: msg,
-				},
+				requestHeaders: Frontend.appController.buildHeaders(),
+				parameters: { m: msg },
 				evalJS: false,
 				evalJSON: false,
 				onSuccess: function(response) {
@@ -49,9 +48,8 @@ Frontend.chatController = SC.Object.create(
 		if (nick != null) {
 			var request = new Ajax.Request('/backend/chat/set_nick', {
 				method: 'GET',
-				parameters: {
-					n: nick,
-				},
+				requestHeaders: Frontend.appController.buildHeaders(),
+				parameters: { n: nick },
 				evalJS: false,
 				evalJSON: false,
 				onSuccess: function(response) {

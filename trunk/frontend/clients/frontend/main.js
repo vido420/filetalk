@@ -2,22 +2,6 @@
 // Frontend
 // ==========================================================================
 
-function createCookie(name,value,days) {
-	if (days) {
-		var date = new Date();
-		date.setTime(date.getTime()+(days*24*60*60*1000));
-		var expires = "; expires="+date.toGMTString();
-	}
-	else var expires = "";
-	document.cookie = name+"="+value+expires+"; path=/";
-}
-
-function eraseCookie(name) {
-	createCookie(name,"",-1);
-}
-
-eraseCookie("_backend_session");
-
 // This is the function that will start your app running.  The default
 // implementation will load any fixtures you have created then instantiate
 // your controllers and awake the elements on your page.
