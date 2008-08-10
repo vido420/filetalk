@@ -38,10 +38,8 @@ Frontend.privateMessageController = SC.Object.create(
 		if (msg && selection && selection.length == 1) {
 			var request = new Ajax.Request('/backend/pm', {
 				method: 'GET',
-				parameters: {
-					m: msg,
-					to: selection[0].get('guid'),
-				},
+				requestHeaders: Frontend.appController.buildHeaders(),
+				parameters: { m: msg, to: selection[0].get('guid') },
 				evalJS: false,
 				evalJSON: false,
 				onSuccess: function(response) {

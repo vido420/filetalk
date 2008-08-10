@@ -15,6 +15,10 @@ require('core');
 */
 Frontend.appController = SC.Object.create(
 /** @scope Frontend.appController */ {
+	clientKey: null,
+	buildHeaders: function() {
+		return { 'File-Talk-Key': Frontend.appController.get('clientKey') };
+	},
 	notImplemented: function() {
 		Frontend.errorMessageController.showErrorDialog("NotImplemented_Title".loc(), "NotImplemented_Message".loc(), null);
 	},
@@ -37,6 +41,7 @@ Frontend.appController = SC.Object.create(
 	poll: function() {
 		var request = new Ajax.Request('/backend/update', {
 			method: 'get',
+			requestHeaders: Frontend.appController.buildHeaders(),
 			evalJS: false,
 			evalJSON: false,
 			onSuccess: function(response) {
@@ -168,6 +173,7 @@ Frontend.appController = SC.Object.create(
 		Frontend.appController.set('isPolling', false);
 		var request = new Ajax.Request('/backend/close', {
 			method: 'get',
+			requestHeaders: Frontend.appController.buildHeaders(),
 			evalJS: false,
 			evalJSON: false,
 			onComplete: this.get('disconnectAction')

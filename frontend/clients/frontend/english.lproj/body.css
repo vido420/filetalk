@@ -22,6 +22,7 @@ div#content {
 }
 
 textarea.userInfoField {
+	font-size:12px;
 	font-family: Monaco, "Courier New", monospace;
 }
 

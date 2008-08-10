@@ -24,6 +24,7 @@ Frontend.userlistController = SC.CollectionController.create(
 		} else {
 			var request = new Ajax.Request('/backend/user/info', {
 				method: 'GET',
+				requestHeaders: Frontend.appController.buildHeaders(),
 				parameters: { u: selection[0].get('guid') },
 				evalJS: false,
 				evalJSON: false,
