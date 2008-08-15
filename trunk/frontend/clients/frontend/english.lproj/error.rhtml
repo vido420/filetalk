@@ -2,9 +2,8 @@
 	<h1><%= label_view :bind => { :value => 'Frontend.errorMessageController.errorTitle' } %></h1>
 	<%= label_view :errorMessage, :bind => { :value => 'Frontend.errorMessageController.errorMessage' } %>
 	<div class="buttons">
-		<% form_view :errorForm, :outlet => true do %>
-			<%= button_view :outlet => true,
-				:title => loc(%(Error_Close)),
+		<% form_view :errorForm do %>
+			<%= button_view :title => loc(%(Error_Close)),
 				:default => true,
 				:width => 60,
 				:action => 'Frontend.errorMessageController.hideErrorDialog' %>

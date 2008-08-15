@@ -1,6 +1,6 @@
 <% view :loginView do %>
 <div id="connection_data">
-<% form_view :loginForm, :outlet => true do %>
+<% form_view :loginForm do %>
 	<div class="group">
 		<h4><%= loc(%(Login_Account_Details)) %>:</h4>
 		<div class="col1">
@@ -8,12 +8,12 @@
 			<span class="input_label"><label for="loginPassword"><%= loc(%(Login_Password)) %>: </label></span>
 		</div>
 		<div class="col2">
-			<%= text_field_view :loginName, :outlet => true, :hint => loc(%(Login_Name)) %>
-			<%= password_field_view :loginPassword, :outlet => true, :hint => loc(%(Login_Password)) %>
+			<%= text_field_view :loginName, :hint => loc(%(Login_Name)) %>
+			<%= password_field_view :loginPassword, :hint => loc(%(Login_Password)) %>
 		</div>
 	</div>
 	<div class="group">
-		<%= button_view :outlet => true, :label => loc(%(Login_Button)), :default => true,
+		<%= button_view :label => loc(%(Login_Button)), :default => true,
 						:enabled => true, :action => 'Frontend.loginController.login' %>
 	</div>
 <% end %>
