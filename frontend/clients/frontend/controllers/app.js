@@ -59,7 +59,7 @@ Frontend.appController = SC.Object.create(
 					var records = [];
 					var users = Frontend.User.findAll();
 					var hadMessages = false;
-					var chatView = SC.page.get('chatHistoryView');
+					var chatView = SC.page.getPath('chatView.chatHistoryScrollView.chatHistoryView');
 					var chatHTML = chatView.get('innerHTML');
 					for (var i = 0; i < json.length; i++) {
 						var record = json[i];
@@ -130,7 +130,7 @@ Frontend.appController = SC.Object.create(
 					if (hadMessages) {
 						/* Scroll to the bottom or keep same position... */
 						var shouldScroll = false;
-						var scrollView = SC.page.get('chatHistoryScrollView').rootElement;
+						var scrollView = SC.page.getPath('chatView.chatHistoryScrollView').rootElement;
 						var currentHeight = 0;
 
 						if (scrollView.scrollHeight > 0) {
@@ -159,6 +159,7 @@ Frontend.appController = SC.Object.create(
 					var timer = SC.Timer.schedule({ target: Frontend.appController, action: 'poll', interval: 500 });
 				}
 			} catch (err) {
+			//	alert(err);
 				Frontend.appController.set('isPolling', false);
 				Frontend.errorMessageController.showErrorDialog("Connection_Lost".loc(),
 					"Connection_Lost_Message".loc(), Frontend.appController.get('disconnectAction'));
@@ -173,7 +174,7 @@ Frontend.appController = SC.Object.create(
 	},
 	disconnectAction: function() {
 		Frontend.appController.set('tab', 'connection');
-		SC.page.get('chatHistoryView').set('innerHTML', '');
+		SC.page.getPath('chatView.chatHistoryScrollView.chatHistoryView').set('innerHTML', '');
 		Frontend.User.removeAll();	
 	},
 	disconnect: function() {

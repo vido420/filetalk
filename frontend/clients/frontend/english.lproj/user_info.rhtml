@@ -1,12 +1,11 @@
 <% view :userInfoDialog, :pane => :dialog, :visible => false, :width => 400 do %>
 	<h4>User Info</h4>
 	<div>
-	<%= text_area_view :userInfoField, :outlet => true, :width => 390, :height => 250, :enabled => false %>
+	<%= text_area_view :userInfoField, :width => 390, :height => 250, :enabled => false %>
 	</div>
 	<div>&nbsp;</div>
 	<div class="buttons">
-		<%= button_view :outlet => true,
-			:title => loc(%(NameDialog_OK)),
+		<%= button_view :title => loc(%(NameDialog_OK)),
 			:default => true,
 			:width => 60,
 			:action => 'Frontend.userlistController.hideUserInfoDialog' %>

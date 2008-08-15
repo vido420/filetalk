@@ -5,11 +5,11 @@
 		<% end %>
 	<% end %>
 	<div id="chat_message">
-		<% form_view :chatForm, :outlet => true do %>
+		<% form_view :chatForm do %>
 		<p>
-			<%= text_field_view :outlet => :chatMessage, :class => 'new_message',
+			<%= text_field_view :chatMessage, :class => 'new_message',
 						:hint => loc(%(Chat_Enter)) %>
-			<%= button_view :outlet => :sendButton, :class => 'send_button',
+			<%= button_view :sendButton, :class => 'send_button',
 						:label => loc(%(Chat_Send)), :default => true,
 						:enabled => true, :action => 'Frontend.chatController.send' %>
 		</p>
@@ -18,7 +18,6 @@
 </div>
 <% scroll_view :userlist_scroll_view do %>
 	<%= list_view :userlist_view,
-		:outlet => true,
 		:example_view => 'Frontend.UserListItemView',
 		:content_value_key => 'nick', :content_icon_key => 'icon',
 		:action => 'Frontend.privateMessageController.sendPM',
