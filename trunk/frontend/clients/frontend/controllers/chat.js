@@ -20,7 +20,7 @@ Frontend.chatController = SC.Object.create(
 		var msg = SC.page.getPath('chatView.chatForm.chatMessage.value');
 		if (msg != null) {
 			var request = new Ajax.Request('/backend/chat', {
-				method: 'GET',
+				method: 'post',
 				requestHeaders: Frontend.appController.buildHeaders(),
 				parameters: { m: msg },
 				evalJS: false,
@@ -47,7 +47,7 @@ Frontend.chatController = SC.Object.create(
 		var nick = SC.page.getPath('nameDialog.nameForm.nameField.value');
 		if (nick != null) {
 			var request = new Ajax.Request('/backend/chat/set_nick', {
-				method: 'GET',
+				method: 'post',
 				requestHeaders: Frontend.appController.buildHeaders(),
 				parameters: { n: nick },
 				evalJS: false,

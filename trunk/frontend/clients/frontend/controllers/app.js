@@ -47,7 +47,7 @@ Frontend.appController = SC.Object.create(
 	},
 	poll: function() {
 		var request = new Ajax.Request('/backend/update', {
-			method: 'get',
+			method: 'post',
 			requestHeaders: Frontend.appController.buildHeaders(),
 			evalJS: false,
 			evalJSON: false,
