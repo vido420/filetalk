@@ -146,6 +146,7 @@ class HotlineClient
   HotlineEvent = Struct.new(:type, :data)
 
   attr_reader :users, :nick
+  attr_accessor :last_update
 
   def initialize(host, port)
     @host = host
@@ -161,6 +162,7 @@ class HotlineClient
     @event_queue.extend(MonitorMixin)
     @event_queue_empty_cond = @event_queue.new_cond
     @thread = nil
+    @last_update = Time.now.to_i
   end
   
   def connect
@@ -449,22 +451,48 @@ module Hotline
       HOTLINE_CONNECTIONS[key] = nil
       hlc = nil
     end
+    hlc.last_update = Time.now.to_i if hlc
     return hlc
   end
   
   def Hotline.disconnect(key)
     hlc = client_for(key)
     hlc.close if hlc && hlc.connected?
-    HOTLINE_CONNECTIONS[key] = nil    
+    HOTLINE_CONNECTIONS[key] = nil
+  end
+
+  def Hotline.start_gc_thread_if_necessary
+    if $gc_thread.nil?
+      $gc_thread = Thread.new do
+        loop do
+          Hotline.gc
+          sleep 1
+        end
+      end
+    end
+  end
+
+  def Hotline.gc
+    HOTLINE_CONNECTIONS.each do |key, hlc|
+      if hlc
+        if Time.now.to_i - hlc.last_update > 60 # 1 minute
+          hlc.close
+          HOTLINE_CONNECTIONS[key] = nil
+          puts "disconnected #{key} due to innactivity"
+        end
+      end
+    end
   end
 
   def Hotline.login(key, host, port, username, password)
+    Hotline.start_gc_thread_if_necessary
     hlc = HOTLINE_CONNECTIONS[key]
     HOTLINE_CONNECTIONS[key] = nil
     hlc.close if hlc and hlc.kind_of? HotlineClient
     hlc = HotlineClient.new(host, port)
     return nil unless hlc.connect
     return nil unless hlc.login(username, password)
+    hlc.last_update = Time.now.to_i
     HOTLINE_CONNECTIONS[key] = hlc
     return hlc
   end
