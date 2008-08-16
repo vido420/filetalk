@@ -37,7 +37,7 @@ Frontend.privateMessageController = SC.Object.create(
 		var selection = Frontend.userlistController.get('selection');
 		if (msg && selection && selection.length == 1) {
 			var request = new Ajax.Request('/backend/pm', {
-				method: 'GET',
+				method: 'post',
 				requestHeaders: Frontend.appController.buildHeaders(),
 				parameters: { m: msg, to: selection[0].get('guid') },
 				evalJS: false,

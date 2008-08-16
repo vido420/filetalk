@@ -23,7 +23,7 @@ Frontend.userlistController = SC.CollectionController.create(
 			alert('You may only get information about one user at a time.')
 		} else {
 			var request = new Ajax.Request('/backend/user/info', {
-				method: 'GET',
+				method: 'post',
 				requestHeaders: Frontend.appController.buildHeaders(),
 				parameters: { u: selection[0].get('guid') },
 				evalJS: false,
