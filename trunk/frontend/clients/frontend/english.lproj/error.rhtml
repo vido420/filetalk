@@ -3,10 +3,12 @@
 	<%= label_view :errorMessage, :bind => { :value => 'Frontend.errorMessageController.errorMessage' } %>
 	<div class="buttons">
 		<% form_view :errorForm do %>
+			<p>
 			<%= button_view :title => loc(%(Error_Close)),
 				:default => true,
 				:width => 60,
 				:action => 'Frontend.errorMessageController.hideErrorDialog' %>
+			</p>
 		<% end %>
 	</div>
 <% end %>

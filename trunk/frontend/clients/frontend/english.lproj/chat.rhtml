@@ -6,13 +6,14 @@
 	<% end %>
 	<div id="chat_message">
 		<% form_view :chatForm do %>
-		<p>
+		<table style="width:100%;border-collapse:collapse"><tr><td style="width:99%;padding-right:10px">
 			<%= text_field_view :chatMessage, :class => 'new_message',
 						:hint => loc(%(Chat_Enter)) %>
+		</td><td>
 			<%= button_view :sendButton, :class => 'send_button',
-						:label => loc(%(Chat_Send)), :default => true,
-						:enabled => true, :action => 'Frontend.chatController.send' %>
-		</p>
+							:label => loc(%(Chat_Send)), :default => true,
+							:enabled => true, :action => 'Frontend.chatController.send' %>
+		</td></tr></table>
 		<% end %>
 	</div>
 </div>
