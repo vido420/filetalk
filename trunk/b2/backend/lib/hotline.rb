@@ -1,3 +1,4 @@
+require 'iconv'
 require 'monitor'
 
 class String
@@ -16,18 +17,21 @@ class String
     return self
   end
 
-  def gen_convert(from, to)
+  def piped_gen_convert(from, to)
     out_text = ''
     conv = IO.popen("iconv -f #{from} -t #{to}", 'r+')
-    self.each do |line|
-      conv.write line
-    end
+    str = self.tr("\r","\n")
+    str.each_line { |line| conv.write line }
     conv.close_write
     outlines = conv.readlines
-    outlines.each do |line|
-      out_text += line
-    end
+    outlines.each { |line| out_text += line }
     conv.close
+    return out_text
+  end
+
+  def gen_convert(from, to)
+    out_text = ''
+    self.tr("\r","\n").each_line { |line| out_text += Iconv.conv(to, from, line) }
     return out_text
   end
 
@@ -59,6 +63,7 @@ class TransactionObject
   USER = 300
   USER_LEFT = -300 # not part of HL protocol
   USER_INFO = -666 # not part of the protocol
+  NEWS_MSG = -777 # not part of the protocol
 
   attr_reader :id, :data
 
@@ -76,6 +81,7 @@ class Transaction
   REQUEST = 0
   REPLY = 1
 
+  ID_GETNEWS = 101
   ID_PRIVATE_MESSAGE = 104
   ID_SEND_CHAT = 105
   ID_CHAT = 106
@@ -190,13 +196,6 @@ class HotlineClient
       end
     end
   end
-  
-  def add_event(type, data)
-    @event_queue.synchronize do
-      @event_queue << HotlineEvent.new(type, data)
-      @event_queue_empty_cond.signal
-    end
-  end
 
   def handle_chat_transaction(chat_transaction)
     chat_transaction.objects.each do |object|
@@ -204,6 +203,16 @@ class HotlineClient
         add_event(TransactionObject::MESSAGE, object.data[1..-1].to_s.to_utf8)
       end
     end
+  end
+
+  def handle_news_transaction(transaction)
+    message = nil
+    transaction.objects.each do |object|
+      if object.id == TransactionObject::MESSAGE
+        message = object.data.to_s
+      end
+    end
+    add_event(TransactionObject::NEWS_MSG, message.to_utf8) unless message.nil?
   end
 
   def handle_userlist_transaction(userlist_transaction)
@@ -271,9 +280,7 @@ class HotlineClient
     end
     if socket != -1
       user = @users.slice!(socket)
-      unless user.nil?
-        add_event(TransactionObject::USER_LEFT, user)
-      end
+      add_event(TransactionObject::USER_LEFT, user) unless user.nil?
     end
   end
 
@@ -302,8 +309,7 @@ class HotlineClient
         message = object.data.to_s
       end
     end
-    return unless message
-    add_event(TransactionObject::USER_INFO, message.to_utf8)
+    add_event(TransactionObject::USER_INFO, message.to_utf8) unless message.nil?
   end
 
   def run
@@ -326,6 +332,8 @@ class HotlineClient
         end
       elsif transaction.id == Transaction::ID_LOGIN
         handle_login_transaction(transaction)
+      elsif transaction.id == Transaction::ID_GETNEWS
+        handle_news_transaction(transaction)
       elsif transaction.id == Transaction::ID_GETUSERLIST
         handle_userlist_transaction(transaction)
       elsif transaction.id == Transaction::ID_USERLIST
@@ -348,6 +356,9 @@ class HotlineClient
         # 2 = refuses private chat
         transaction << TransactionObject.new(TransactionObject::STATUS_FLAGS, "\0\2")
         send_transaction(transaction)
+      else
+        puts "Unknown transaction received:"
+        p transaction
       end
       @tasks.synchronize { @task_cond.signal } if should_signal
     end
@@ -374,7 +385,12 @@ class HotlineClient
     transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_GETUSERLIST)
     send_transaction(transaction, Transaction::ID_GETUSERLIST)
   end
-  
+
+  def request_news
+    transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_GETNEWS)
+    send_transaction(transaction, Transaction::ID_GETNEWS)
+  end
+
   def send_chat(message)
     transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_SEND_CHAT)
     transaction << TransactionObject.new(TransactionObject::MESSAGE, message.to_macroman)
@@ -415,6 +431,13 @@ class HotlineClient
     @socket.write(transaction.pack)
     @tasks[transaction.task_number] = task_id unless task_id.nil?
     return transaction.task_number
+  end
+
+  def add_event(type, data)
+    @event_queue.synchronize do
+      @event_queue << HotlineEvent.new(type, data)
+      @event_queue_empty_cond.signal
+    end
   end
 
   def has_next_event?
