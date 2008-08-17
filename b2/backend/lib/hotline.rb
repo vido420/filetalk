@@ -310,14 +310,18 @@ class HotlineClient
     loop do
       transaction = Transaction.new(0,0)
       transaction.read(@socket)
-      if transaction.id == 0
+      transaction_is_reply = (transaction.id == 0)
+      if transaction_is_reply
         transaction.id = @tasks.slice!(transaction.task_number)
         should_signal = true
       end
       if transaction.is_error
-        transaction.objects.each do |object|
-          if object.id == TransactionObject::ERROR_MSG
-            add_event(TransactionObject::ERROR_MSG, object.data.to_s.to_utf8)
+        # ignore reply errors to transactions we didn't expect a reply for...
+        unless transaction_is_reply and transaction.id.nil?
+          transaction.objects.each do |object|
+            if object.id == TransactionObject::ERROR_MSG
+              add_event(TransactionObject::ERROR_MSG, object.data.to_s.to_utf8)
+            end
           end
         end
       elsif transaction.id == Transaction::ID_LOGIN
