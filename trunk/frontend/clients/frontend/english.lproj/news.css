@@ -1,0 +1,8 @@
+#news_content {
+	font-family: Monaco, "Courier New", monospace;
+	font-size: 11px;
+	border: 1px solid #d4d4d4;
+	height: 358px;
+	background: #fff;
+	overflow-y: scroll;
+}

@@ -25,6 +25,9 @@ Object.extend(String.English,{
 	"NotImplemented_Title": "Not Implemented",
 	"NotImplemented_Message": "The feature you tried to use is not yet implemented.",
 
+	"NotLoggedIn_Title": "Not Logged-in",
+	"NotLoggedIn_Message": "You must be logged-in before you may use this feature.",
+
 	"Error_Close": "Close",
 
 	"Server_Error": "Error from Server:",
