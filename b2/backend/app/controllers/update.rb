@@ -23,9 +23,14 @@ class Update < Application
         obj = event.data
         text += { :recordType => 'pm', :socket => obj[0], :nick => obj[1], :message => obj[2] }.to_json
       elsif event.type == TransactionObject::USER_INFO
-        text += { :recordType => 'user_info', :message => event.data }.to_json        
+        text += { :recordType => 'user_info', :message => event.data }.to_json
+      elsif event.type == TransactionObject::NEWS_MSG
+        text += { :recordType => 'news', :message => event.data }.to_json
       elsif event.type == TransactionObject::ERROR_MSG
-        text += { :recordType => 'error', :message => event.data }.to_json        
+        text += { :recordType => 'error', :message => event.data }.to_json
+      else
+        puts "Unknown update event:"
+        p event
       end
       text += ','
       done = !hlc.has_next_event?
