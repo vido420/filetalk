@@ -90,16 +90,16 @@ class Transaction
   ID_USERLIST = 354
 
   attr_reader :type, :id, :task_number, :is_error, :objects
-  attr_writer :id
+  attr_writer :id, :task_number
 
-  def initialize(type, id, task_number)
+  def initialize(type, id)
     @type = type
     @id = id
-    @task_number = task_number
+    @task_number = 0
     @is_error = false
     @objects = []
   end
-  
+
   def read(io)
     @type = io.read(2).unpack('n')[0]
     @id = io.read(2).unpack('n')[0]
@@ -308,7 +308,7 @@ class HotlineClient
 
   def run
     loop do
-      transaction = Transaction.new(0,0,0)
+      transaction = Transaction.new(0,0)
       transaction.read(@socket)
       if transaction.id == 0
         transaction.id = @tasks.slice!(transaction.task_number)
@@ -337,14 +337,13 @@ class HotlineClient
       elsif transaction.id == Transaction::ID_PRIVATE_MESSAGE
         handle_private_message_transaction(transaction)
       elsif transaction.id == 109
-        transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_AGREE, @task_number)
+        transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_AGREE)
         transaction << TransactionObject.new(TransactionObject::NICK, @nick)
         transaction << TransactionObject.new(TransactionObject::ICON, "\0\0")
         # 1 = refuses private messages
         # 2 = refuses private chat
         transaction << TransactionObject.new(TransactionObject::STATUS_FLAGS, "\0\2")
-        @socket.write(transaction.pack)
-        @task_number += 1
+        send_transaction(transaction)
       end
       @tasks.synchronize { @task_cond.signal } if should_signal
     end
@@ -357,64 +356,61 @@ class HotlineClient
 
   def login(username, password)
     @nick = username
-    transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_LOGIN, @task_number)
+    transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_LOGIN)
     transaction << TransactionObject.new(TransactionObject::LOGIN, username.encode)
     transaction << TransactionObject.new(TransactionObject::PASSWORD, password.encode)
     transaction << TransactionObject.new(TransactionObject::VERSION, [150].pack('n'))
-    @socket.write(transaction.pack)
-    @tasks[@task_number] = Transaction::ID_LOGIN
-    login_task_number = @task_number
-    @task_number += 1
+    login_task_number = send_transaction(transaction, Transaction::ID_LOGIN)
     @tasks.synchronize { @task_cond.wait_while { !@tasks[login_task_number].nil? } }
     puts "logged_in = #{connected?}"
     return connected?
   end
 
   def request_userlist
-    transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_GETUSERLIST, @task_number)
-    @socket.write(transaction.pack)
-    @tasks[@task_number] = Transaction::ID_GETUSERLIST
-    @task_number += 1
+    transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_GETUSERLIST)
+    send_transaction(transaction, Transaction::ID_GETUSERLIST)
   end
   
   def send_chat(message)
-    transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_SEND_CHAT, @task_number)
+    transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_SEND_CHAT)
     transaction << TransactionObject.new(TransactionObject::MESSAGE, message.to_macroman)
-    @socket.write(transaction.pack)
-    @task_number += 1
+    send_transaction(transaction)
   end
   
   def send_emote(message)
-    transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_SEND_CHAT, @task_number)
+    transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_SEND_CHAT)
     transaction << TransactionObject.new(TransactionObject::MESSAGE, message.to_macroman)
     transaction << TransactionObject.new(TransactionObject::PARAMETER, [1].pack('n'))
-    @socket.write(transaction.pack)
-    @task_number += 1
+    send_transaction(transaction)
   end
 
   def send_pm(to_socket, message)
-    transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_SEND_PM, @task_number)
+    transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_SEND_PM)
     transaction << TransactionObject.new(TransactionObject::SOCKET, [to_socket].pack('N'))
     transaction << TransactionObject.new(TransactionObject::MESSAGE, message.to_macroman)
-    @socket.write(transaction.pack)
-    @task_number += 1
+    send_transaction(transaction)
   end
 
   def set_nick(nick)
     @nick = nick
-    transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_CHANGE_NICK, @task_number)
+    transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_CHANGE_NICK)
     transaction << TransactionObject.new(TransactionObject::NICK, nick.to_macroman)
     transaction << TransactionObject.new(TransactionObject::ICON, "\0\0")
-    @socket.write(transaction.pack)
-    @task_number += 1
+    send_transaction(transaction)
   end
   
   def request_user_info(socket)
-    transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_GETUSERINFO, @task_number)
+    transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_GETUSERINFO)
     transaction << TransactionObject.new(TransactionObject::SOCKET, [socket].pack('N'))
-    @socket.write(transaction.pack)
-    @tasks[@task_number] = Transaction::ID_GETUSERINFO
+    send_transaction(transaction, Transaction::ID_GETUSERINFO)
+  end
+  
+  def send_transaction(transaction, task_id=nil)
+    transaction.task_number = @task_number
     @task_number += 1
+    @socket.write(transaction.pack)
+    @tasks[transaction.task_number] = task_id unless task_id.nil?
+    return transaction.task_number
   end
 
   def has_next_event?
