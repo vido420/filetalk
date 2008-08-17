@@ -40,7 +40,7 @@ Frontend.loginController = SC.Object.create(
 				var key = response.getResponseHeader('File-Talk-Key');
 				if (key) {
 					Frontend.appController.set('clientKey', key);
-					Frontend.appController.set('tab', 'chat');
+					Frontend.navController.set('tab', 'chat');
 				} else {
 					Frontend.errorMessageController.showErrorDialog("Login_Failed".loc(), "Login_Failed_Message".loc(), null);
 				}

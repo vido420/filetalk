@@ -22,17 +22,6 @@ Frontend.appController = SC.Object.create(
 	notImplemented: function() {
 		Frontend.errorMessageController.showErrorDialog("NotImplemented_Title".loc(), "NotImplemented_Message".loc(), null);
 	},
-	tab: 'connection',
-	tabObserver: function() {
-		var tab = this.get('tab');
-		SC.page.get('navigationView').set('value', tab);
-		if (tab == 'chat') {
-			SC.page.get('contentView').set('content', SC.page.get('chatView'));
-			Frontend.appController.startPolling();
-		} else if (tab == 'connection') {
-			SC.page.get('contentView').set('content', SC.page.get('loginView'));
-		}
-	}.observes('tab'),
 	linkify: function(text) {
 		// TODO: need better regex
 		var regex = /((https?)|(ftp))\:\/\/[^\s]*[^.,">\s\)\]]/g;
@@ -100,6 +89,10 @@ Frontend.appController = SC.Object.create(
 							hadMessages = true;
 						} else if (record.recordType == 'user_info') {
 							Frontend.userlistController.showUserInfoDialog(record.message.escapeHTML());
+						} else if (record.recordType == 'news') {
+							var newsText = Frontend.appController.linkify(record.message);
+							newsText = newsText.replace(new RegExp("\\n", "g"), "<br />");
+							Frontend.newsController.set('news', newsText);
 						} else {
 							if (record.recordType == 'user') {
 								record.recordType = Frontend.User;
@@ -159,7 +152,7 @@ Frontend.appController = SC.Object.create(
 					var timer = SC.Timer.schedule({ target: Frontend.appController, action: 'poll', interval: 500 });
 				}
 			} catch (err) {
-			//	alert(err);
+		//		alert(err);
 				Frontend.appController.set('isPolling', false);
 				Frontend.errorMessageController.showErrorDialog("Connection_Lost".loc(),
 					"Connection_Lost_Message".loc(), Frontend.appController.get('disconnectAction'));
@@ -173,9 +166,10 @@ Frontend.appController = SC.Object.create(
 		});	
 	},
 	disconnectAction: function() {
-		Frontend.appController.set('tab', 'connection');
+		Frontend.navController.set('tab', 'connection');
 		SC.page.getPath('chatView.chatHistoryScrollView.chatHistoryView').set('innerHTML', '');
 		Frontend.User.removeAll();	
+		Frontend.newsController.set('news', '');
 	},
 	disconnect: function() {
 		var confirmed = confirm("Are you sure you want to disconnect?");
