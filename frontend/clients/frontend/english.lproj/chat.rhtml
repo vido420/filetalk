@@ -1,23 +1,29 @@
-<% view :chatView do %>
-<div id="chat_main">
+<% view :chat_view do %>
+
+<% split_view :chat_split_view, :direction => :horizontal do %>
+
+<% view :chat_main, :min_thickness => 200, :can_collapse => false do %>
 	<% scroll_view :chat_history_scroll_view do %>
 		<% view :chat_history_view do %>
 		<% end %>
 	<% end %>
 	<div id="chat_message">
-		<% form_view :chatForm do %>
-		<table style="width:100%;border-collapse:collapse"><tr><td style="width:99%;padding-right:10px">
-			<%= text_field_view :chatMessage, :class => 'new_message',
+		<% form_view :chat_form do %>
+		<table><tr><td class="msg">
+			<%= text_field_view :chat_message, :class => 'new_message',
 						:hint => loc(%(Chat_Enter)) %>
 		</td><td>
-			<%= button_view :sendButton, :class => 'send_button',
+			<%= button_view :send_button, :class => 'send_button',
 							:label => loc(%(Chat_Send)), :default => true,
 							:enabled => true, :action => 'Frontend.chatController.send' %>
 		</td></tr></table>
 		<% end %>
 	</div>
-</div>
-<% scroll_view :userlist_scroll_view do %>
+<% end %>
+
+<%= split_divider_view :chat_splitter %>
+
+<% scroll_view :userlist_scroll_view, :min_thickness => 90 do %>
 	<%= list_view :userlist_view,
 		:example_view => 'Frontend.UserListItemView',
 		:content_value_key => 'nick', :content_icon_key => 'icon',
@@ -27,6 +33,9 @@
 			:selection => 'Frontend.userlistController.selection'
 		} %>
 <% end %>
+
+<% end %>
+
 <div class="tools">
 	<ul>
 		<li id="tool_sendpm">

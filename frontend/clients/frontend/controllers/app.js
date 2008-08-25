@@ -34,6 +34,12 @@ Frontend.appController = SC.Object.create(
 		this.set('isPolling', true);
 		Frontend.appController.poll();
 	},
+	getChatHistoryView: function() {
+		return SC.page.getPath('chatView.chatSplitView.chatMain.chatHistoryScrollView.chatHistoryView');
+	},
+	getChatHistoryViewScrollView: function() {
+		return SC.page.getPath('chatView.chatSplitView.chatMain.chatHistoryScrollView');
+	},
 	poll: function() {
 		var request = new Ajax.Request('/backend/update', {
 			method: 'post',
@@ -48,7 +54,7 @@ Frontend.appController = SC.Object.create(
 					var records = [];
 					var users = Frontend.User.findAll();
 					var hadMessages = false;
-					var chatView = SC.page.getPath('chatView.chatHistoryScrollView.chatHistoryView');
+					var chatView = Frontend.appController.getChatHistoryView();
 					var chatHTML = chatView.get('innerHTML');
 					for (var i = 0; i < json.length; i++) {
 						var record = json[i];
@@ -123,7 +129,7 @@ Frontend.appController = SC.Object.create(
 					if (hadMessages) {
 						/* Scroll to the bottom or keep same position... */
 						var shouldScroll = false;
-						var scrollView = SC.page.getPath('chatView.chatHistoryScrollView').rootElement;
+						var scrollView = Frontend.appController.getChatHistoryViewScrollView().rootElement;
 						var currentHeight = 0;
 
 						if (scrollView.scrollHeight > 0) {
@@ -167,7 +173,7 @@ Frontend.appController = SC.Object.create(
 	},
 	disconnectAction: function() {
 		Frontend.navController.set('tab', 'connection');
-		SC.page.getPath('chatView.chatHistoryScrollView.chatHistoryView').set('innerHTML', '');
+		Frontend.appController.getChatHistoryView().set('innerHTML', '');
 		Frontend.User.removeAll();	
 		Frontend.newsController.set('news', '');
 	},

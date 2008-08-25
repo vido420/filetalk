@@ -1,16 +1,41 @@
 /*## chat ##*/
-
+div#chat_split_view {
+	position:absolute;
+	left:auto;
+	right:auto;
+	width:686px;
+	height:334px;	
+}
+div#chat_splitter {
+	position:absolute;top:0;bottom:0;
+	left:488px;
+	width:21px;
+	height:332px;
+	background:none;
+	border:none;
+}
+div#userlist_scroll_view {
+	border: 1px solid #d4d4d4;
+	height: 330px;
+	overflow-y: scroll;
+	position:absolute;top:0;bottom:0;
+	left:509px;right:0;
+}
+div#userlist_scroll_view div.userlist_view div.sel {
+	background-color: #C7D3E9;
+	border-color: #C7D3E9;
+	color:#000;
+}
 div#chat_main {
-	width: 488px;
-	height: 334px;
-	float: left;
+	position:absolute;top:0;bottom:0;left:0;
+	width:488px;
 	margin-right: 21px;
 	line-height: 1.5em;
 }
 div#chat_main div#chat_history_scroll_view {
 	border: 1px solid #d4d4d4;
 	height: 304px;
-	width: 488px;
+	width: 100%;
 	background: #fff;
 	overflow-y: scroll;
 }
@@ -41,6 +66,14 @@ div#chat_main div#chat_history_scroll_view div#chat_history_view div.pm div.msg 
 div#chat_main div#chat_message {
 	padding-top: 5px;
 }
+div#chat_main div#chat_message table {
+	width:100%;
+	border-collapse:collapse;	
+}
+div#chat_main div#chat_message table td.msg {
+	width:99%;
+	padding-right:10px;
+}
 div#chat_main div#chat_message input.new_message {
 	width: 100%;
 	height: 16px;
@@ -48,18 +81,8 @@ div#chat_main div#chat_message input.new_message {
 div#content .admin {
 	color: #AA101F;
 }
-div#userlist_scroll_view {
-	border: 1px solid #d4d4d4;
-	height: 330px;
-	overflow-y: scroll;
-}
-div#userlist_scroll_view div.userlist_view div.sel {
-	background-color: #C7D3E9;
-	border-color: #C7D3E9;
-	color:#000;
-}
 div#chat_users {
-	width: 169px;
+	width: 149px;
 	height: 334px;
 	border: 1px solid #d4d4d4;
 	float: left;
@@ -93,7 +116,7 @@ div#chat_users li.selected{
 /******** Tools ********/
 
 div.tools {
-	clear: both;
+	padding-top:334px;
 }
 div.tools ul {
 	height: 53px;
