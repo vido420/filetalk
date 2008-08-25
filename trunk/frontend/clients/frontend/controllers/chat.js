@@ -17,7 +17,7 @@ Frontend.chatController = SC.Object.create(
 /** @scope Frontend.chatController */ {
 
 	send: function() {
-		var msg = SC.page.getPath('chatView.chatForm.chatMessage.value');
+		var msg = SC.page.getPath('chatView.chatSplitView.chatMain.chatForm.chatMessage.value');
 		if (msg != null) {
 			var request = new Ajax.Request('/backend/chat', {
 				method: 'post',
@@ -30,7 +30,7 @@ Frontend.chatController = SC.Object.create(
 			   	onFailure: function() {
 				}
 			});
-			SC.page.getPath('chatView.chatForm.chatMessage').rootElement.select();
+			SC.page.getPath('chatView.chatSplitView.chatMain.chatForm.chatMessage').rootElement.select();
 		}
 	},
 	userNick: "error",
