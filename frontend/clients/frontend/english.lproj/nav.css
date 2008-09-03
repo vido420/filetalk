@@ -5,6 +5,10 @@ div#navigation {
     border-bottom: 1px solid #ABABAB;
     height: 53px;
     font-size: 1.1em;
+    -moz-user-select: none;
+    -webkit-user-select: none; 
+    -khtml-user-select: none; 
+    user-select: none;
 }
 div#navigation ul {
     height: 53px;
