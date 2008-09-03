@@ -65,10 +65,14 @@ div#chat_main div#chat_history_scroll_view div#chat_history_view div.pm div.msg 
 }
 div#chat_main div#chat_message {
 	padding-top: 5px;
+	-moz-user-select: none;
+	-webkit-user-select: none; 
+	-khtml-user-select: none; 
+	user-select: none;
 }
 div#chat_main div#chat_message table {
 	width:100%;
-	border-collapse:collapse;	
+	border-collapse:collapse;
 }
 div#chat_main div#chat_message table td.msg {
 	width:99%;
@@ -115,20 +119,24 @@ div#chat_users li.selected{
 
 /******** Tools ********/
 
-div.tools {
+div#tools {
 	padding-top:334px;
+	-moz-user-select: none;
+	-webkit-user-select: none; 
+	-khtml-user-select: none; 
+	user-select: none;
 }
-div.tools ul {
+div#tools ul {
 	height: 53px;
 	list-style: none;
 	margin: 0px 106px;
 }
-div.tools ul li {
+div#tools ul li {
 	display: block;
 	float: left;
 }
 
-div.tools ul li a {
+div#tools ul li a {
 	text-decoration: none;
 	display: block;
 	background-repeat: no-repeat;
@@ -139,33 +147,33 @@ div.tools ul li a {
 	height: 28px;
 	color: #000;
 }
-div.tools ul li:hover {
+div#tools ul li:hover {
 	background-image: url(/images/hover.png);
 }
-div.tools ul li#tool_upload div {
+div#tools ul li#tool_upload div {
 	background-image: url(/images/upload.png);
 }
-div.tools ul li#tool_download div {
+div#tools ul li#tool_download div {
 	background-image: url(/images/download.png);
 }
-div.tools ul li#tool_info div {
+div#tools ul li#tool_info div {
 	background-image: url(/images/info.png);
 }
-div.tools ul li#tool_search div {
+div#tools ul li#tool_search div {
 	background-image: url(/images/search.png);
 }
-div.tools ul li#tool_refresh div {
+div#tools ul li#tool_refresh div {
 	background-image: url(/images/refresh.png);
 }
-div.tools ul li#tool_sendpm a {
+div#tools ul li#tool_sendpm a {
 	background-image: url(/images/sendpm.png);
 }
-div.tools ul li#tool_privatechat a {
+div#tools ul li#tool_privatechat a {
 	background-image: url(/images/privatechat.png);
 }
-div.tools ul li#tool_userinfo a {
+div#tools ul li#tool_userinfo a {
 	background-image: url(/images/userinfo.png);
 }
-div.tools ul li#tool_changename a {
+div#tools ul li#tool_changename a {
 	background-image: url(/images/changename.png);
 }
