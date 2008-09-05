@@ -96,7 +96,11 @@ Frontend.appController = SC.Object.create(
 						} else if (record.recordType == 'user_info') {
 							Frontend.userlistController.showUserInfoDialog(record.message.escapeHTML());
 						} else if (record.recordType == 'news') {
-							var newsText = Frontend.appController.linkify(record.message);
+							var newsText = record.message.escapeHTML();
+							newsText = newsText.replace(new RegExp("  ", "g"), "&nbsp; ");
+							newsText = newsText.replace(new RegExp("\t", "g"), "&nbsp; &nbsp; ");
+							newsText = Frontend.appController.linkify(newsText);
+							newsText = newsText.replace(new RegExp("\\n ", "g"), "<br />&nbsp;");
 							newsText = newsText.replace(new RegExp("\\n", "g"), "<br />");
 							Frontend.newsController.set('news', newsText);
 						} else {
