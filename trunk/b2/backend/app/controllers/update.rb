@@ -10,24 +10,25 @@ class Update < Application
     done = !hlc.has_next_event?
     while not done
       event = hlc.next_event
-      if event.type == TransactionObject::MESSAGE
-        text += { :recordType => 'chat', :message => event.data }.to_json
-      elsif event.type == 'UserList'
-        text += { :recordType => 'clear_userlist' }.to_json
-      elsif event.type == TransactionObject::USER
-        text += { :recordType => 'user', :guid => event.data.socket,
-                  :nick => event.data.nick, :status => event.data.status }.to_json
-      elsif event.type == TransactionObject::USER_LEFT
-        text += { :recordType => 'user_left', :guid => event.data.socket }.to_json
-      elsif event.type == TransactionObject::PRIVATE_MESSAGE
-        obj = event.data
-        text += { :recordType => 'pm', :socket => obj[0], :nick => obj[1], :message => obj[2] }.to_json
-      elsif event.type == TransactionObject::USER_INFO
-        text += { :recordType => 'user_info', :message => event.data }.to_json
-      elsif event.type == TransactionObject::NEWS_MSG
-        text += { :recordType => 'news', :message => event.data }.to_json
-      elsif event.type == TransactionObject::ERROR_MSG
-        text += { :recordType => 'error', :message => event.data }.to_json
+      if event.kind_of?(HotlineChatEvent)
+        text += { :recordType => 'chat', :message => event.message }.to_json
+      elsif event.kind_of?(HotlineUserUpdateEvent)
+        text += { :recordType => 'user', :guid => event.user.socket,
+                  :nick => event.user.nick, :status => event.user.status }.to_json
+      elsif event.kind_of?(HotlineUserJoinedEvent)
+        text += { :recordType => 'user', :guid => event.user.socket,
+                  :nick => event.user.nick, :status => event.user.status }.to_json
+      elsif event.kind_of?(HotlineUserLeftEvent)
+        text += { :recordType => 'user_left', :guid => event.user.socket }.to_json
+      elsif event.kind_of?(HotlinePrivateMessageEvent)
+        text += { :recordType => 'pm', :socket => event.user.socket,
+                  :nick => event.user.nick, :message => event.message }.to_json
+      elsif event.kind_of?(HotlineUserInfoEvent)
+        text += { :recordType => 'user_info', :message => event.info_message }.to_json
+      elsif event.kind_of?(HotlineNewsEvent)
+        text += { :recordType => 'news', :message => event.news_message }.to_json
+      elsif event.kind_of?(HotlineErrorEvent)
+        text += { :recordType => 'error', :message => event.error_message }.to_json
       else
         puts "Unknown update event:"
         p event
