@@ -15,7 +15,7 @@ require('core');
 */
 Frontend.chatController = SC.Object.create(
 /** @scope Frontend.chatController */ {
-
+	scrollOffset: null,
 	send: function() {
 		var msg = SC.page.getPath('chatView.chatSplitView.chatMain.chatForm.chatMessage.value');
 		if (msg != null) {
