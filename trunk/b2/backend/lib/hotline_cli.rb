@@ -49,7 +49,9 @@ $stdin.each_line do |input|
 	elsif input[0..2] == "/me"
 		client.send_emote(input[3..-1])
 	elsif input[0..5] == "/nick "
-		client.set_nick("≤")#input[6..-1].to_macroman)
+		client.set_nick(input[6..-1].to_macroman)
+	elsif input[0..5] == "/pc"
+		client.create_pchat_with_user(87)
 	elsif !input.empty?
 		client.send_chat(input)
 	end
