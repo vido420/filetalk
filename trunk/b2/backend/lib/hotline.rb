@@ -210,10 +210,18 @@ class HotlineClient
   end
 
   def handle_chat_transaction(chat_transaction)
+    message = nil
+    chatwindow = ni
     chat_transaction.objects.each do |object|
       if object.id == TransactionObject::MESSAGE
-        add_event(TransactionObject::MESSAGE, object.data[1..-1].to_s.to_utf8)
+        message = object.data[1..-1].to_s.to_utf8
+      elsif object.id == TransactionObject::CHATWINDOW
+        chatwindow = object.data
       end
+    end
+    if message
+      # TODO add chatwindow parameter
+      add_event(TransactionObject::MESSAGE, message)
     end
   end
 
