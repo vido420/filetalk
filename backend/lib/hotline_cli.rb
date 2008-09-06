@@ -9,7 +9,7 @@ Thread.abort_on_exception = true
 require 'hotline'
 
 
-client = HotlineClient.new("halberd.dyndns.org", 5500)
+client = HotlineClient.new("hl.udogs.net", 5500)
 if client.connect
 	puts "Connected"
 	if client.login("test","test")
@@ -25,11 +25,12 @@ end
 
 Thread.new do
 	loop do
-		obj = client.next_event
-		if obj && obj.type == TransactionObject::MESSAGE
-		  puts obj.data.to_s
+		event = client.next_event
+		if event.kind_of?(HotlineChatEvent)
+		  puts event.message
+		else
+		  p event
 		end
-		p obj
 	end
 end
 
@@ -52,7 +53,7 @@ $stdin.each_line do |input|
 	elsif input[0..5] == "/nick "
 		client.set_nick(input[6..-1].to_macroman)
 	elsif input[0..5] == "/pc"
-		client.create_pchat_with_user(1)
+		client.create_pchat_with_user(91)
 	elsif !input.empty?
 		client.send_chat(input)
 	end

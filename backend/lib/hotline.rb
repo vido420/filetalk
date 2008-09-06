@@ -219,7 +219,7 @@ class HotlineClient
       if object.id == TransactionObject::MESSAGE
         message = object.data[1..-1].to_s.to_utf8
       elsif object.id == TransactionObject::CHATWINDOW
-        chatwindow = object.data
+        chatwindow = read_number(object.data)
       end
     end
     add_event(HotlineChatEvent.new(message, chatwindow)) if message
@@ -337,19 +337,15 @@ class HotlineClient
       # also has icon, nick, status of user, but we're smart and
       # and can look that up ourselves...
       if object.id == TransactionObject::CHATWINDOW
-        chatwindow = object.data
+        chatwindow = read_number(object.data)
       elsif object.id == TransactionObject::SOCKET
         socket = read_number(object.data)
       end
     end
-    # this is simply a confirmation of our chat request...
-    # the chat has not yet been accepted, and this
-    # transaction can essentially be ignored
+    # started the private chat, with the first user being us
     if chatwindow && socket
       user = @users[socket]
-      if user
-        # TODO puts "Created pchat!!"
-      end
+      add_event(HotlineUserJoinedEvent.new(user, chatwindow)) if user
     end
   end
 
@@ -360,14 +356,12 @@ class HotlineClient
       # also has icon, nick, status of user, but we're smart and
       # and can look that up ourselves...
       if object.id == TransactionObject::CHATWINDOW
-        chatwindow = object.data
+        chatwindow = read_number(object.data)
       elsif object.id == TransactionObject::SOCKET
         socket = read_number(object.data)
       end
     end
-    # this is simply a confirmation of our chat request...
-    # the chat has not yet been accepted, and this
-    # transaction can essentially be ignored
+    # user joined our chat!
     if chatwindow && socket
       user = @users[socket]
       add_event(HotlineUserJoinedEvent.new(user, chatwindow)) if user
@@ -381,7 +375,7 @@ class HotlineClient
       # also has icon, nick, status of user, but we're smart and
       # and can look that up ourselves...
       if object.id == TransactionObject::CHATWINDOW
-        chatwindow = object.data
+        chatwindow = read_number(object.data)
       elsif object.id == TransactionObject::SOCKET
         socket = read_number(object.data)
       end
