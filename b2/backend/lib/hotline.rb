@@ -58,6 +58,7 @@ class TransactionObject
   PARAMETER = 109
   STATUS = 112
   STATUS_FLAGS = 113
+  CHATWINDOW = 114
   VERSION = 160
   SERVER_NAME = 162
   USER = 300
@@ -87,6 +88,17 @@ class Transaction
   ID_CHAT = 106
   ID_LOGIN = 107
   ID_SEND_PM = 108
+
+  ID_CREATE_PCHAT = 112
+  ID_ADD_TO_PCHAT = 113
+  ID_REJECT_PCHAT = 114
+  ID_REQUEST_JOIN_PCHAT = 115
+  ID_LEAVING_PCHAT = 116
+  ID_JOINED_PCHAT = 117
+  ID_LEFT_PCHAT = 118
+  ID_CHANGED_SUBJECT = 119
+  ID_REQUEST_CHANGE_SUBJECT = 120
+
   ID_AGREE = 121
   ID_GETUSERLIST = 300
   ID_USERCHANGE = 301
@@ -312,6 +324,72 @@ class HotlineClient
     add_event(TransactionObject::USER_INFO, message.to_utf8) unless message.nil?
   end
 
+  def handle_create_pchat_transaction(transaction)
+    chatwindow = nil
+    socket = nil
+    transaction.objects.each do |object|
+      # also has icon, nick, status of user, but we're smart and
+      # and can look that up ourselves...
+      if object.id == TransactionObject::CHATWINDOW
+        chatwindow = object.data
+      elsif object.id == TransactionObject::SOCKET
+        socket = read_number(object.data)
+      end
+    end
+    # this is simply a confirmation of our chat request...
+    # the chat has not yet been accepted, and this
+    # transaction can essentially be ignored
+    if chatwindow && socket
+      user = @users[socket]
+      if user
+        # puts "Got chat!!"
+      end
+    end
+  end
+
+  def handle_joined_pchat_transaction(transaction)
+    chatwindow = nil
+    socket = nil
+    transaction.objects.each do |object|
+      # also has icon, nick, status of user, but we're smart and
+      # and can look that up ourselves...
+      if object.id == TransactionObject::CHATWINDOW
+        chatwindow = object.data
+      elsif object.id == TransactionObject::SOCKET
+        socket = read_number(object.data)
+      end
+    end
+    # this is simply a confirmation of our chat request...
+    # the chat has not yet been accepted, and this
+    # transaction can essentially be ignored
+    if chatwindow && socket
+      user = @users[socket]
+      if user
+        puts "User #{user.nick} joined pchat!"
+      end
+    end
+  end
+
+  def handle_left_pchat_transaction(transaction)
+    chatwindow = nil
+    socket = nil
+    transaction.objects.each do |object|
+      # also has icon, nick, status of user, but we're smart and
+      # and can look that up ourselves...
+      if object.id == TransactionObject::CHATWINDOW
+        chatwindow = object.data
+      elsif object.id == TransactionObject::SOCKET
+        socket = read_number(object.data)
+      end
+    end
+    if chatwindow && socket
+      user = @users[socket]
+      if user
+        puts "User #{user.nick} left pchat!"
+      end
+    end
+  end
+
   def run
     loop do
       transaction = Transaction.new(0,0)
@@ -348,6 +426,12 @@ class HotlineClient
         handle_chat_transaction(transaction)
       elsif transaction.id == Transaction::ID_PRIVATE_MESSAGE
         handle_private_message_transaction(transaction)
+      elsif transaction.id == Transaction::ID_CREATE_PCHAT
+        handle_create_pchat_transaction(transaction)
+      elsif transaction.id == Transaction::ID_JOINED_PCHAT
+        handle_joined_pchat_transaction(transaction)
+      elsif transaction.id == Transaction::ID_LEFT_PCHAT
+        handle_left_pchat_transaction(transaction)
       elsif transaction.id == 109
         transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_AGREE)
         transaction << TransactionObject.new(TransactionObject::NICK, @nick)
@@ -357,7 +441,7 @@ class HotlineClient
         transaction << TransactionObject.new(TransactionObject::STATUS_FLAGS, "\0\2")
         send_transaction(transaction)
       else
-        puts "Unknown transaction received:"
+        puts "Unknown transaction (#{transaction.id}) received:"
         p transaction
       end
       @tasks.synchronize { @task_cond.signal } if should_signal
@@ -424,7 +508,13 @@ class HotlineClient
     transaction << TransactionObject.new(TransactionObject::SOCKET, [socket].pack('N'))
     send_transaction(transaction, Transaction::ID_GETUSERINFO)
   end
-  
+
+  def create_pchat_with_user(socket)
+    transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_CREATE_PCHAT)
+    transaction << TransactionObject.new(TransactionObject::SOCKET, [socket].pack('N'))
+    send_transaction(transaction, Transaction::ID_CREATE_PCHAT)
+  end
+
   def send_transaction(transaction, task_id=nil)
     transaction.task_number = @task_number
     @task_number += 1
