@@ -46,10 +46,18 @@ end
 
 HotlineUser = Struct.new(:socket, :nick, :icon, :status)
 
+HotlineChatEvent = Struct.new(:message, :conversation_id)
+HotlineUserUpdateEvent = Struct.new(:user)
+HotlineUserJoinedEvent = Struct.new(:user, :conversation_id)
+HotlineUserLeftEvent = Struct.new(:user, :conversation_id)
+HotlinePrivateMessageEvent = Struct.new(:user, :message)
+HotlineUserInfoEvent = Struct.new(:info_message)
+HotlineNewsEvent = Struct.new(:news_message)
+HotlineErrorEvent = Struct.new(:error_message)
+
 class TransactionObject
   ERROR_MSG = 100
   MESSAGE = 101
-  PRIVATE_MESSAGE = -101 # not part of HL protocol
   NICK = 102
   SOCKET = 103
   ICON = 104
@@ -62,9 +70,6 @@ class TransactionObject
   VERSION = 160
   SERVER_NAME = 162
   USER = 300
-  USER_LEFT = -300 # not part of HL protocol
-  USER_INFO = -666 # not part of the protocol
-  NEWS_MSG = -777 # not part of the protocol
 
   attr_reader :id, :data
 
@@ -161,8 +166,6 @@ end
 
 class HotlineClient
 
-  HotlineEvent = Struct.new(:type, :data)
-
   attr_reader :users, :nick
   attr_accessor :last_update
 
@@ -211,7 +214,7 @@ class HotlineClient
 
   def handle_chat_transaction(chat_transaction)
     message = nil
-    chatwindow = ni
+    chatwindow = nil
     chat_transaction.objects.each do |object|
       if object.id == TransactionObject::MESSAGE
         message = object.data[1..-1].to_s.to_utf8
@@ -219,10 +222,7 @@ class HotlineClient
         chatwindow = object.data
       end
     end
-    if message
-      # TODO add chatwindow parameter
-      add_event(TransactionObject::MESSAGE, message)
-    end
+    add_event(HotlineChatEvent.new(message, chatwindow)) if message
   end
 
   def handle_news_transaction(transaction)
@@ -232,7 +232,7 @@ class HotlineClient
         message = object.data.to_s
       end
     end
-    add_event(TransactionObject::NEWS_MSG, message.to_utf8) unless message.nil?
+    add_event(HotlineNewsEvent.new(message.to_utf8)) if message
   end
 
   def handle_userlist_transaction(userlist_transaction)
@@ -245,7 +245,7 @@ class HotlineClient
         #(:socket, :nick, :icon, :status)        
         user = HotlineUser.new(parsed_data[0], object.data[8..-1].strip.to_utf8,
                                parsed_data[1], parsed_data[2])
-        add_event(TransactionObject::USER, user)
+        add_event(HotlineUserUpdateEvent.new(user))
         @users[user.socket] = user
       end
     end
@@ -287,38 +287,36 @@ class HotlineClient
         user.icon = icon unless icon.nil?
         user.status = status unless status.nil?
       end
-      add_event(TransactionObject::USER, user)
+      add_event(HotlineUserUpdateEvent.new(user))
     end
   end
 
   def handle_userleave_transaction(transaction)
-    socket = -1
+    socket = nil
     transaction.objects.each do |object|
       if object.id == TransactionObject::SOCKET
         socket = read_number(object.data)
       end
     end
-    if socket != -1
+    if socket
       user = @users.slice!(socket)
-      add_event(TransactionObject::USER_LEFT, user) unless user.nil?
+      add_event(HotlineUserLeftEvent.new(user, nil)) if user
     end
   end
 
   def handle_private_message_transaction(transaction)
     socket = nil
-    nick = nil
     message = nil
     transaction.objects.each do |object|
       if object.id == TransactionObject::SOCKET
         socket = read_number(object.data)
-      elsif object.id == TransactionObject::NICK
-        nick = object.data.to_s
       elsif object.id == TransactionObject::MESSAGE
         message = object.data.to_s
       end
     end
-    if socket && nick && message
-      add_event(TransactionObject::PRIVATE_MESSAGE, [socket, nick.to_utf8, message.to_utf8])
+    if socket && message
+      user = @users[socket]
+      add_event(HotlinePrivateMessageEvent.new(user, message.to_utf8)) if user
     end
   end
 
@@ -329,7 +327,7 @@ class HotlineClient
         message = object.data.to_s
       end
     end
-    add_event(TransactionObject::USER_INFO, message.to_utf8) unless message.nil?
+    add_event(HotlineUserInfoEvent.new(message.to_utf8)) if message
   end
 
   def handle_create_pchat_transaction(transaction)
@@ -350,7 +348,7 @@ class HotlineClient
     if chatwindow && socket
       user = @users[socket]
       if user
-        # puts "Got chat!!"
+        # TODO puts "Created pchat!!"
       end
     end
   end
@@ -372,9 +370,7 @@ class HotlineClient
     # transaction can essentially be ignored
     if chatwindow && socket
       user = @users[socket]
-      if user
-        puts "User #{user.nick} joined pchat!"
-      end
+      add_event(HotlineUserJoinedEvent.new(user, chatwindow)) if user
     end
   end
 
@@ -392,9 +388,7 @@ class HotlineClient
     end
     if chatwindow && socket
       user = @users[socket]
-      if user
-        puts "User #{user.nick} left pchat!"
-      end
+      add_event(HotlineUserLeftEvent.new(user, chatwindow)) if user
     end
   end
 
@@ -412,7 +406,7 @@ class HotlineClient
         unless transaction_is_reply and transaction.id.nil?
           transaction.objects.each do |object|
             if object.id == TransactionObject::ERROR_MSG
-              add_event(TransactionObject::ERROR_MSG, object.data.to_s.to_utf8)
+              add_event(HotlineErrorEvent.new(object.data.to_s.to_utf8))
             end
           end
         end
@@ -531,9 +525,9 @@ class HotlineClient
     return transaction.task_number
   end
 
-  def add_event(type, data)
+  def add_event(event)
     @event_queue.synchronize do
-      @event_queue << HotlineEvent.new(type, data)
+      @event_queue << event
       @event_queue_empty_cond.signal
     end
   end
