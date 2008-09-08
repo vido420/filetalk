@@ -1,0 +1,18 @@
+<% view :invitationDialog, :pane => :dialog, :visible => false, :width => 400 do %>
+	<h1><%= label_view :value => loc(%(PrivateChat_Invitation_Title)) %></h1>
+	<p><%= label_view :invitationMessage %></p>
+	<div class="buttons">
+		<% form_view :invitationForm do %>
+			<p>
+			<%= button_view :title => loc(%(PrivateChat_Invitation_Refuse)),
+				:default => false,
+				:width => 60,
+				:action => 'Frontend.chatController.refuseChatInvitation' %>
+			<%= button_view :title => loc(%(PrivateChat_Invitation_Accept)),
+				:default => true,
+				:width => 60,
+				:action => 'Frontend.chatController.acceptChatInvitation' %>
+			</p>
+		<% end %>
+	</div>
+<% end %>

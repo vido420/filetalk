@@ -31,4 +31,20 @@ class Chat < Application
     hlc.create_pchat_with_user(params['user'].to_i)
     render 'OK'
   end
+
+  def accept_pchat
+    hlc = Hotline::client_for(client_key)
+    return not_logged_in if hlc.nil?
+    return invalid_params if params['cid'].nil?
+    hlc.join_pchat(params['cid'].to_i)
+    render 'OK'
+  end
+
+  def refuse_pchat
+    hlc = Hotline::client_for(client_key)
+    return not_logged_in if hlc.nil?
+    return invalid_params if params['cid'].nil?
+    hlc.reject_pchat(params['cid'].to_i)
+    render 'OK'
+  end
 end

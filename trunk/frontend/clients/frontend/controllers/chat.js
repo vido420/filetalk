@@ -61,7 +61,7 @@ Frontend.chatController = SC.Object.create(
 			// TODO: this limitation shouldn't exist
 			alert('You may only invite a single user to private chat.')
 		} else {
-			var request = new Ajax.Request('/backend/pchat', {
+			var request = new Ajax.Request('/backend/pchat/start', {
 				method: 'post',
 				requestHeaders: Frontend.appController.buildHeaders(),
 				parameters: { user: selection[0].guid },
@@ -73,6 +73,59 @@ Frontend.chatController = SC.Object.create(
 				}
 			});
 		}
+	},
+	invitedToConversationId: null,
+	invitationQueue: [],
+	showChatInvitationDialog: function(conversationId, user) {
+		var invitedToConversationId = Frontend.chatController.get('invitedToConversationId');
+		if (invitedToConversationId) {
+			var invitation = { cid: conversationId, user: user };
+			Frontend.chatController.get('invitationQueue').push(invitation);
+		} else {
+			Frontend.chatController.set('invitedToConversationId', conversationId);
+			var text = sprintf("PrivateChat_Invitation_Text".loc(), user.get('nick'));
+			SC.page.getPath('invitationDialog.invitationMessage').set('value', text);
+			SC.page.get('invitationDialog').set('isVisible', true);
+		}
+	},
+	hideChatInvitationDialog: function() {
+		SC.page.get('invitationDialog').set('isVisible', false);
+		Frontend.chatController.set('invitedToConversationId', null);
+		var queue = Frontend.chatController.get('invitationQueue');
+		if (queue.length > 0) {
+			var invitation = queue.shift();
+			Frontend.chatController.showChatInvitationDialog(invitation.cid, invitation.user);
+		}
+	},
+	acceptChatInvitation: function() {
+		var invitedToConversationId = Frontend.chatController.get('invitedToConversationId');
+		var request = new Ajax.Request('/backend/pchat/accept', {
+			method: 'post',
+			requestHeaders: Frontend.appController.buildHeaders(),
+			parameters: { cid: invitedToConversationId },
+			evalJS: false,
+			evalJSON: false,
+			onSuccess: function(response) {
+			},
+		   	onFailure: function() {
+			}
+		});
+		Frontend.chatController.hideChatInvitationDialog();
+	},
+	refuseChatInvitation: function() {
+		var invitedToConversationId = Frontend.chatController.get('invitedToConversationId');
+		var request = new Ajax.Request('/backend/pchat/refuse', {
+			method: 'post',
+			requestHeaders: Frontend.appController.buildHeaders(),
+			parameters: { cid: invitedToConversationId },
+			evalJS: false,
+			evalJSON: false,
+			onSuccess: function(response) {
+			},
+		   	onFailure: function() {
+			}
+		});
+		Frontend.chatController.hideChatInvitationDialog();		
 	},
 	userNick: "error",
 	showChangeNickDialog: function() {

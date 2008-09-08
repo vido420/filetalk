@@ -51,6 +51,7 @@ HotlineUserUpdateEvent = Struct.new(:user)
 HotlineUserJoinedEvent = Struct.new(:user, :conversation_id)
 HotlineUserLeftEvent = Struct.new(:user, :conversation_id)
 HotlinePrivateMessageEvent = Struct.new(:user, :message)
+HotlineInvitedToChatEvent = Struct.new(:conversation_id, :user)
 HotlineUserInfoEvent = Struct.new(:info_message)
 HotlineNewsEvent = Struct.new(:news_message)
 HotlineErrorEvent = Struct.new(:error_message)
@@ -95,9 +96,9 @@ class Transaction
   ID_SEND_PM = 108
 
   ID_CREATE_PCHAT = 112
-  ID_ADD_TO_PCHAT = 113
+  ID_INVITE_TO_PCHAT = 113
   ID_REJECT_PCHAT = 114
-  ID_REQUEST_JOIN_PCHAT = 115
+  ID_JOIN_PCHAT = 115
   ID_LEAVING_PCHAT = 116
   ID_JOINED_PCHAT = 117
   ID_LEFT_PCHAT = 118
@@ -175,6 +176,7 @@ class HotlineClient
     @nick = nil
     @task_number = 1
     @tasks = []
+    @task_data = []
     @tasks.extend(MonitorMixin)
     @task_cond = @tasks.new_cond
     @server_version = 0
@@ -202,8 +204,8 @@ class HotlineClient
     return false
   end
 
-  def handle_login_transaction(login_transaction)
-    login_transaction.objects.each do |object|
+  def handle_login_transaction(transaction)
+    transaction.objects.each do |object|
       if object.id == TransactionObject::VERSION
         @server_version = object.data.unpack("n")[0]
       elsif object.id == TransactionObject::SERVER_NAME
@@ -212,10 +214,10 @@ class HotlineClient
     end
   end
 
-  def handle_chat_transaction(chat_transaction)
+  def handle_chat_transaction(transaction)
     message = nil
     chatwindow = nil
-    chat_transaction.objects.each do |object|
+    transaction.objects.each do |object|
       if object.id == TransactionObject::MESSAGE
         message = object.data[1..-1].to_s.to_utf8
       elsif object.id == TransactionObject::CHATWINDOW
@@ -235,9 +237,9 @@ class HotlineClient
     add_event(HotlineNewsEvent.new(message.to_utf8)) if message
   end
 
-  def handle_userlist_transaction(userlist_transaction)
+  def handle_userlist_transaction(transaction)
     @users = []
-    userlist_transaction.objects.each do |object|
+    transaction.objects.each do |object|
       # socket, icon, status, length of nick (all shorts)
       # nick
       if object.id == TransactionObject::USER
@@ -386,6 +388,38 @@ class HotlineClient
     end
   end
 
+  def handle_invite_to_pchat_transaction(transaction)
+    chatwindow = nil
+    socket = nil
+    transaction.objects.each do |object|
+      # also has icon, nick, status of user, but we're smart and
+      # and can look that up ourselves...
+      if object.id == TransactionObject::CHATWINDOW
+        chatwindow = read_number(object.data)
+      elsif object.id == TransactionObject::SOCKET
+        socket = read_number(object.data)
+      end
+    end
+    if chatwindow && socket
+      user = @users[socket]
+      add_event(HotlineInvitedToChatEvent.new(chatwindow, user)) if user
+    end
+  end
+
+  def handle_join_pchat_transaction(transaction, conversation_id)
+    transaction.objects.each do |object|
+      # socket, icon, status, length of nick (all shorts)
+      # nick
+      if object.id == TransactionObject::USER
+        parsed_data = object.data[0..7].unpack('nnnn')
+        #(:socket, :nick, :icon, :status)        
+        user = HotlineUser.new(parsed_data[0], object.data[8..-1].strip.to_utf8,
+                               parsed_data[1], parsed_data[2])
+        add_event(HotlineUserJoinedEvent.new(user, conversation_id))
+      end
+    end
+  end
+
   def run
     loop do
       transaction = Transaction.new(0,0)
@@ -428,6 +462,11 @@ class HotlineClient
         handle_joined_pchat_transaction(transaction)
       elsif transaction.id == Transaction::ID_LEFT_PCHAT
         handle_left_pchat_transaction(transaction)
+      elsif transaction.id == Transaction::ID_INVITE_TO_PCHAT
+        handle_invite_to_pchat_transaction(transaction)
+      elsif transaction.id == Transaction::ID_JOIN_PCHAT
+        conversation_id = @task_data.slice!(transaction.task_number)
+        handle_join_pchat_transaction(transaction, conversation_id)
       elsif transaction.id == 109
         transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_AGREE)
         transaction << TransactionObject.new(TransactionObject::NICK, @nick)
@@ -509,6 +548,26 @@ class HotlineClient
     transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_CREATE_PCHAT)
     transaction << TransactionObject.new(TransactionObject::SOCKET, [socket].pack('N'))
     send_transaction(transaction, Transaction::ID_CREATE_PCHAT)
+  end
+
+  def invite_user_to_pchat(socket, conversation_id)
+    transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_INVITE_TO_PCHAT)
+    transaction << TransactionObject.new(TransactionObject::SOCKET, [socket].pack('N'))
+    transaction << TransactionObject.new(TransactionObject::CHATWINDOW, [conversation_id].pack('N'))
+    send_transaction(transaction)
+  end
+
+  def reject_pchat(conversation_id)
+    transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_REJECT_PCHAT)
+    transaction << TransactionObject.new(TransactionObject::CHATWINDOW, [conversation_id].pack('N'))
+    send_transaction(transaction)
+  end
+
+  def join_pchat(conversation_id)
+    transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_JOIN_PCHAT)
+    transaction << TransactionObject.new(TransactionObject::CHATWINDOW, [conversation_id].pack('N'))
+    task_number = send_transaction(transaction, Transaction::ID_JOIN_PCHAT)
+    @task_data[task_number] = conversation_id
   end
 
   def send_transaction(transaction, task_id=nil)

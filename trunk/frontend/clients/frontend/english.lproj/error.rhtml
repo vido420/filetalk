@@ -1,6 +1,6 @@
 <% view :errorDialog, :pane => :dialog, :visible => false, :width => 400 do %>
 	<h1><%= label_view :bind => { :value => 'Frontend.errorMessageController.errorTitle' } %></h1>
-	<%= label_view :errorMessage, :bind => { :value => 'Frontend.errorMessageController.errorMessage' } %>
+	<p><%= label_view :errorMessage, :bind => { :value => 'Frontend.errorMessageController.errorMessage' } %></p>
 	<div class="buttons">
 		<% form_view :errorForm do %>
 			<p>
