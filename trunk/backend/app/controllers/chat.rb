@@ -23,5 +23,12 @@ class Chat < Application
     hlc.send_pm(params['to'].to_i, params['m'])
     render 'OK'
   end
-  
+
+  def start_pchat
+    hlc = Hotline::client_for(client_key)
+    return not_logged_in if hlc.nil?
+    return invalid_params if params['user'].nil?
+    hlc.create_pchat_with_user(params['user'].to_i)
+    render 'OK'
+  end
 end

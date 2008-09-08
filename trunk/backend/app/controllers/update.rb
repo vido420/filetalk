@@ -11,15 +11,31 @@ class Update < Application
     while not done
       event = hlc.next_event
       if event.kind_of?(HotlineChatEvent)
-        text += { :recordType => 'chat', :message => event.message }.to_json
+        if event.conversation_id
+          text += { :recordType => 'chat', :message => event.message,
+                    :conversationId => event.conversation_id }.to_json
+        else
+          text += { :recordType => 'chat', :message => event.message }.to_json
+        end
       elsif event.kind_of?(HotlineUserUpdateEvent)
         text += { :recordType => 'user', :guid => event.user.socket,
                   :nick => event.user.nick, :status => event.user.status }.to_json
       elsif event.kind_of?(HotlineUserJoinedEvent)
-        text += { :recordType => 'user', :guid => event.user.socket,
-                  :nick => event.user.nick, :status => event.user.status }.to_json
+        if event.conversation_id
+          text += { :recordType => 'user', :guid => event.user.socket,
+                    :nick => event.user.nick, :status => event.user.status,
+                    :conversationId => event.conversation_id }.to_json
+        else
+          text += { :recordType => 'user', :guid => event.user.socket,
+                    :nick => event.user.nick, :status => event.user.status }.to_json
+        end
       elsif event.kind_of?(HotlineUserLeftEvent)
-        text += { :recordType => 'user_left', :guid => event.user.socket }.to_json
+        if event.conversation_id
+          text += { :recordType => 'user_left', :guid => event.user.sockey,
+                    :conversationId => event.conversation_id }.to_json
+        else
+          text += { :recordType => 'user_left', :guid => event.user.socket }.to_json
+        end
       elsif event.kind_of?(HotlinePrivateMessageEvent)
         text += { :recordType => 'pm', :socket => event.user.socket,
                   :nick => event.user.nick, :message => event.message }.to_json
