@@ -28,8 +28,12 @@ Merb::Router.prepare do |r|
     to(:controller => 'login', :action => 'logout')
   r.match('/backend/pm').
     to(:controller => 'chat', :action => 'send_pm')
-  r.match('/backend/pchat').
+  r.match('/backend/pchat/start').
     to(:controller => 'chat', :action => 'start_pchat')
+  r.match('/backend/pchat/accept').
+    to(:controller => 'chat', :action => 'accept_pchat')
+  r.match('/backend/pchat/refuse').
+    to(:controller => 'chat', :action => 'refuse_pchat')
   r.match('/backend/user/info').
     to(:controller => 'users', :action => 'info')
   r.match('/backend/:controller').

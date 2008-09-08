@@ -44,4 +44,9 @@ Object.extend(String.English,{
 	"NameDialog_Name": "Name",
 	"NameDialog_Cancel": "Cancel",
 	"NameDialog_OK": "OK",
+
+	"PrivateChat_Invitation_Title": "Private Chat",
+	"PrivateChat_Invitation_Text": "%s has invited you to a private chat.",
+	"PrivateChat_Invitation_Accept": "Accept",
+	"PrivateChat_Invitation_Refuse": "Refuse"
 }) ;

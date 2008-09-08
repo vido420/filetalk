@@ -45,6 +45,8 @@ class Update < Application
         text += { :recordType => 'news', :message => event.news_message }.to_json
       elsif event.kind_of?(HotlineErrorEvent)
         text += { :recordType => 'error', :message => event.error_message }.to_json
+      elsif event.kind_of?(HotlineInvitedToChatEvent)
+        text += { :recordType => 'chat_invite', :user => event.user.socket, :conversationId => event.conversation_id }.to_json
       else
         puts "Unknown update event:"
         p event

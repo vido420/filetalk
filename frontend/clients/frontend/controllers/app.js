@@ -57,6 +57,12 @@ Frontend.appController = SC.Object.create(
 						var record = json[i];
 						if (record.recordType == 'clear_userlist') {
 							Frontend.User.removeAll();
+						} else if (record.recordType == 'chat_invite') {
+							var user = Frontend.User.find(record.user);
+							var conversation = Frontend.Conversation.find(record.conversationId);
+							if (user && !conversation) {
+								Frontend.chatController.showChatInvitationDialog(record.conversationId, user);
+							}
 						} else if (record.recordType == 'user') {
 							var user = Frontend.User.find(record.guid);
 							if (!user) {

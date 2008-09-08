@@ -19,6 +19,7 @@ Frontend.errorMessageController = SC.Object.create(
 	errorMessage: 'Error Message',
 	errorCloseAction: null,
 	showErrorDialog: function(title, message, closeAction) {
+		Frontend.chatController.hideChatInvitationDialog();		
 		Frontend.errorMessageController.set('errorTitle', title);
 		Frontend.errorMessageController.set('errorMessage', message);
 		Frontend.errorMessageController.set('errorCloseAction', closeAction);
