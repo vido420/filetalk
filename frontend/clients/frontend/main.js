@@ -32,4 +32,6 @@ function main() {
   // This will make your app come alive!
 
   SC.page.get('contentView').set('content', SC.page.get('loginView'));
+  SC.Store.addRecord(Frontend.Conversation.create({ guid: 'default', chatHTML: '' }));
+  Frontend.chatController.set('currentConversation', Frontend.Conversation.find('default'));
 };

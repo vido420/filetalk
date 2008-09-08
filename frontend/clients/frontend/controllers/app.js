@@ -54,8 +54,6 @@ Frontend.appController = SC.Object.create(
 					var records = [];
 					var users = Frontend.User.findAll();
 					var hadMessages = false;
-					var chatView = Frontend.appController.getChatHistoryView();
-					var chatHTML = chatView.get('innerHTML');
 					for (var i = 0; i < json.length; i++) {
 						var record = json[i];
 						if (record.recordType == 'clear_userlist') {
@@ -64,8 +62,10 @@ Frontend.appController = SC.Object.create(
 							var user = Frontend.User.find(record.guid);
 							if (user != null) {
 								var msg = '<<< ' + user.get('nick') + ' has left >>>';
-								chatHTML += '<div class="info">&nbsp;' + msg.escapeHTML() + '</div>';
-								hadMessages = true;
+								msg = '<div class="info">&nbsp;' + msg.escapeHTML() + '</div>';
+								if (Frontend.chatController.appendChat(msg, record.conversationId)) {
+									hadMessages = true;
+								}
 								SC.Store.removeRecord(user);
 							}
 						} else if (record.recordType == 'chat') {
@@ -80,19 +80,24 @@ Frontend.appController = SC.Object.create(
 								}
 							}
 							msg = Frontend.appController.linkify(msg);
-							chatHTML += '<div class="msg">' + msg + '</div>';
-							hadMessages = true;
+							msg = '<div class="msg">' + msg + '</div>';
+							if (Frontend.chatController.appendChat(msg, record.conversationId)) {
+								hadMessages = true;
+							}
 						} else if (record.recordType == 'error') {
 							Frontend.errorMessageController.showErrorDialog("Server_Error".loc(), record.message, null);
 						} else if (record.recordType == 'pm') {
-							chatHTML += '<div class="pm">';
-							chatHTML += '<div class="head">';
-							chatHTML += 'Private Message from ' + record.nick.escapeHTML() + ':';
-							chatHTML += '</div>';
-							var msg = Frontend.appController.linkify(record.message.escapeHTML());
-							chatHTML += '<div class="msg">' + msg + '</div>';
-							chatHTML += '</div>';
-							hadMessages = true;
+							var msg = [	'<div class="pm">',
+											'<div class="head">',
+												'Private Message from ', record.nick.escapeHTML(), ':',
+											'</div>',
+											'<div class="msg">',
+												Frontend.appController.linkify(record.message.escapeHTML()),
+											'</div>',
+										'</div>'].join('');
+							if (Frontend.chatController.appendChat(msg)) {
+								hadMessages = true;
+							}
 						} else if (record.recordType == 'user_info') {
 							Frontend.userlistController.showUserInfoDialog(record.message.escapeHTML());
 						} else if (record.recordType == 'news') {
@@ -115,14 +120,18 @@ Frontend.appController = SC.Object.create(
 								if (user) {
 									if (user.get('nick') != record.nick) {
 										var msg = '<<< ' + user.get('nick') + ' is now known as ' + record.nick + ' >>>';
-										chatHTML += '<div class="info">&nbsp;' + msg.escapeHTML() + '</div>';
-										hadMessages = true;
+										msg = '<div class="info">&nbsp;' + msg.escapeHTML() + '</div>';
+										if (Frontend.chatController.appendChat(msg)) {
+											hadMessages = true;
+										}
 									}
 								} else /* if (users && users.length > 0) */ {
 									/* Don't display these when users is empty => aka when just joining. */
 									var msg = '<<< ' + record.nick + ' has joined >>>';
-									chatHTML += '<div class="info">&nbsp;' + msg.escapeHTML() + '</div>';
-									hadMessages = true;
+									msg = '<div class="info">&nbsp;' + msg.escapeHTML() + '</div>';
+									if (Frontend.chatController.appendChat(msg, record.conversationId)) {
+										hadMessages = true;
+									}
 								}
 							}
 							records.push(record);
@@ -146,7 +155,7 @@ Frontend.appController = SC.Object.create(
 				    	if (currentHeight - scrollView.scrollTop - height < 5) {
 				        	shouldScroll = true;
 						}
-						chatView.set('innerHTML', chatHTML);
+						Frontend.chatController.updateChatView();
 						if (shouldScroll) {
 							if (scrollView.scrollHeight > 0) {
 								currentHeight = scrollView.scrollHeight;
@@ -162,7 +171,7 @@ Frontend.appController = SC.Object.create(
 					var timer = SC.Timer.schedule({ target: Frontend.appController, action: 'poll', interval: 500 });
 				}
 			} catch (err) {
-		//		alert(err);
+				alert(err);
 				Frontend.appController.set('isPolling', false);
 				Frontend.errorMessageController.showErrorDialog("Connection_Lost".loc(),
 					"Connection_Lost_Message".loc(), Frontend.appController.get('disconnectAction'));

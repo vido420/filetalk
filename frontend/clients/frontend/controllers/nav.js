@@ -24,10 +24,6 @@ Frontend.navController = SC.Object.create(
 			if (Frontend.appController.get('isPolling') == false) {
 				Frontend.appController.startPolling();
 			}
-			var scrollOffset = Frontend.chatController.get('scrollOffset');
-			if (scrollOffset) {
-				Frontend.appController.getChatHistoryViewScrollView().rootElement.scrollTop = scrollOffset;
-			}
 		} else if (tab == 'news') {
 			SC.page.get('contentView').set('content', SC.page.get('newsView'));			
 		} else if (tab == 'connection') {
@@ -57,10 +53,6 @@ Frontend.navController = SC.Object.create(
 				"NotLoggedIn_Message".loc(), null);
 		} else if (currentTab == 'news') {
 		} else {
-			if (currentTab == 'chat') {
-				var scrollOffset = Frontend.appController.getChatHistoryViewScrollView().rootElement.scrollTop;
-				Frontend.chatController.set('scrollOffset', scrollOffset);
-			}
 			Frontend.newsController.requestNews();
 			Frontend.navController.set('tab', 'news');
 		}
