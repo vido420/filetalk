@@ -51,13 +51,51 @@ Frontend.appController = SC.Object.create(
 				var json = '' + response.transport.responseText;
 				json = eval(json);
 				if (json) {
-					var records = [];
 					var users = Frontend.User.findAll();
 					var hadMessages = false;
 					for (var i = 0; i < json.length; i++) {
 						var record = json[i];
 						if (record.recordType == 'clear_userlist') {
 							Frontend.User.removeAll();
+						} else if (record.recordType == 'user') {
+							var user = Frontend.User.find(record.guid);
+							if (!user) {
+								SC.Store.addRecord(Frontend.User.create({ guid: record.guid }));
+								user = Frontend.User.find(record.guid);
+								var msg = '<<< ' + record.nick + ' has joined >>>';
+								msg = '<div class="info">&nbsp;' + msg.escapeHTML() + '</div>';
+								if (Frontend.chatController.appendChat(msg)) {
+									hadMessages = true;
+								}
+								var conversation = Frontend.Conversation.find('default');
+								conversation.get('userlist').push(user);
+							} else {
+								if (user.get('nick') != record.nick) {
+									var msg = '<<< ' + user.get('nick') + ' is now known as ' + record.nick + ' >>>';
+									msg = '<div class="info">&nbsp;' + msg.escapeHTML() + '</div>';
+									var conversations = Frontend.Conversation.findAll();
+									for (var i = 0; i < conversations.length; i++) {
+										var c = conversations[i];
+										if (c.get('userlist').indexOf(user) != -1) {
+											if (Frontend.chatController.appendChat(msg, c.get('guid'))) {
+												hadMessages = true;
+											}
+										}
+									}
+								}
+							}
+							user.set('nick', record.nick);
+							user.set('status', record.status);
+							user.set('icon', ((record.status & 2) == 2 ? '/images/adminuser.png' : '/images/reguser.png'));								
+							if (record.conversationId) {
+								var msg = '<<< ' + record.nick + ' has joined >>>';
+								msg = '<div class="info">&nbsp;' + msg.escapeHTML() + '</div>';
+								if (Frontend.chatController.appendChat(msg, record.conversationId)) {
+									hadMessages = true;
+								}
+								var conversation = Frontend.Conversation.find(record.conversationId);
+								conversation.get('userlist').push(user);
+							}
 						} else if (record.recordType == 'user_left') {
 							var user = Frontend.User.find(record.guid);
 							if (user != null) {
@@ -66,7 +104,15 @@ Frontend.appController = SC.Object.create(
 								if (Frontend.chatController.appendChat(msg, record.conversationId)) {
 									hadMessages = true;
 								}
-								SC.Store.removeRecord(user);
+								var cid = (record.conversationId ? record.conversationId : 'default');
+								var conversation = Frontend.Conversation.find(cid);
+								var userIndex = conversation.get('userlist').indexOf(user);
+								if (userIndex != -1) {
+									conversation.get('userlist').slice(userIndex);
+								}
+								if (cid == 'default') {
+									SC.Store.removeRecord(user);
+								}
 							}
 						} else if (record.recordType == 'chat') {
 							var msg = record.message.escapeHTML();
@@ -109,36 +155,10 @@ Frontend.appController = SC.Object.create(
 							newsText = newsText.replace(new RegExp("\\n", "g"), "<br />");
 							Frontend.newsController.set('news', newsText);
 						} else {
-							if (record.recordType == 'user') {
-								record.recordType = Frontend.User;
-								if ((record.status & 2) == 2) {
-									record.icon = '/images/adminuser.png';								
-								} else {
-									record.icon = '/images/reguser.png';
-								}
-								var user = Frontend.User.find(record.guid);
-								if (user) {
-									if (user.get('nick') != record.nick) {
-										var msg = '<<< ' + user.get('nick') + ' is now known as ' + record.nick + ' >>>';
-										msg = '<div class="info">&nbsp;' + msg.escapeHTML() + '</div>';
-										if (Frontend.chatController.appendChat(msg)) {
-											hadMessages = true;
-										}
-									}
-								} else /* if (users && users.length > 0) */ {
-									/* Don't display these when users is empty => aka when just joining. */
-									var msg = '<<< ' + record.nick + ' has joined >>>';
-									msg = '<div class="info">&nbsp;' + msg.escapeHTML() + '</div>';
-									if (Frontend.chatController.appendChat(msg, record.conversationId)) {
-										hadMessages = true;
-									}
-								}
-							}
-							records.push(record);
+							alert("Error: Unhandled record " + record.toString());
 						}
 					}
-					SC.Store.updateRecords(records);
-			  		Frontend.userlistController.set('content', Frontend.User.collection().refresh());
+					Frontend.userlistController.refresh();
 					if (hadMessages) {
 						/* Scroll to the bottom or keep same position... */
 						var shouldScroll = false;
@@ -171,7 +191,8 @@ Frontend.appController = SC.Object.create(
 					var timer = SC.Timer.schedule({ target: Frontend.appController, action: 'poll', interval: 500 });
 				}
 			} catch (err) {
-				alert(err);
+			//	alert(err);
+			//	alert(err.stack);
 				Frontend.appController.set('isPolling', false);
 				Frontend.errorMessageController.showErrorDialog("Connection_Lost".loc(),
 					"Connection_Lost_Message".loc(), Frontend.appController.get('disconnectAction'));

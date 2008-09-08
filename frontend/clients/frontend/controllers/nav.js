@@ -41,7 +41,20 @@ Frontend.navController = SC.Object.create(
 		}		
 	},
 	openPrivate: function() {
-		Frontend.appController.notImplemented();		
+		var conversations = Frontend.Conversation.findAll();
+		var currentConversation = Frontend.chatController.get('currentConversation');
+		for (var i = 0; i < conversations.length; i++) {
+			if (conversations[i] == currentConversation) {
+				if (i == conversations.length - 1) {
+					Frontend.chatController.set('currentConversation', conversations[0]);
+				} else {
+					Frontend.chatController.set('currentConversation', conversations[i + 1]);
+				}
+				break;
+			}
+		}
+		Frontend.userlistController.refresh();
+		Frontend.chatController.updateChatView();
 	},
 	openFiles: function() {
 		Frontend.appController.notImplemented();		

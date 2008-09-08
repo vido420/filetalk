@@ -18,11 +18,13 @@ Frontend.chatController = SC.Object.create(
 	currentConversation: null,
 	appendChat: function(msg, cid) {
 		var conversation = Frontend.Conversation.find(cid ? cid : 'default');
-		if (conversation) {
-			conversation.set('chatHTML', conversation.get('chatHTML') + msg);
-			if (conversation == Frontend.chatController.get('currentConversation')) {
-				return true;
-			}						
+		if (!conversation) {
+			SC.Store.addRecord(Frontend.Conversation.create({ guid: cid, chatHTML: '', userlist: [] }));
+			conversation = Frontend.Conversation.find(cid);
+		}
+		conversation.set('chatHTML', conversation.get('chatHTML') + msg);
+		if (conversation == Frontend.chatController.get('currentConversation')) {
+			return true;
 		}
 		return false;
 	},
@@ -49,6 +51,27 @@ Frontend.chatController = SC.Object.create(
 				}
 			});
 			messageField.set('value', '');
+		}
+	},
+	startChatWithUser: function() {
+		var selection = Frontend.userlistController.get('selection');
+		if (!selection || selection.length < 1) {
+			alert('Please select the user whom you want to invite to private chat.');
+		} else if (selection.length > 1) {
+			// TODO: this limitation shouldn't exist
+			alert('You may only invite a single user to private chat.')
+		} else {
+			var request = new Ajax.Request('/backend/pchat', {
+				method: 'post',
+				requestHeaders: Frontend.appController.buildHeaders(),
+				parameters: { user: selection[0].guid },
+				evalJS: false,
+				evalJSON: false,
+				onSuccess: function(response) {
+				},
+			   	onFailure: function() {
+				}
+			});
 		}
 	},
 	userNick: "error",
