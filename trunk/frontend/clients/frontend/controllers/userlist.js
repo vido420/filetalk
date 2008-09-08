@@ -13,8 +13,13 @@ require('core');
   @version 0.1
   @static
 */
-Frontend.userlistController = SC.CollectionController.create(
+Frontend.userlistController = SC.ArrayController.create(
 /** @scope Frontend.userlistController */ {
+	refresh: function() {
+		var currentConversation = Frontend.chatController.get('currentConversation');
+		var users = currentConversation.get('userlist');
+		Frontend.userlistController.set('content', users);
+	},
 	getUserInfo: function() {
 		var selection = Frontend.userlistController.get('selection');
 		if (!selection || selection.length < 1) {
