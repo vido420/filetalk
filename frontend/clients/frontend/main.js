@@ -17,11 +17,6 @@ function main() {
   // when you are ready to pull data from your server.
   Frontend.server.preload(Frontend.FIXTURES);
 
-  // TODO: refresh() any collections you have created to get their records.
-  // ex: Frontend.contacts.refresh() ;
-
-  Frontend.userlistController.set('content', Frontend.User.collection().refresh());
-
   // Step 2: Instantiate Your Views
   // The default code just activates all the views you have on the page. If
   // your app gets any level of complexity, you should just get the views you

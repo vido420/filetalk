@@ -18,7 +18,7 @@ Frontend.userlistController = SC.ArrayController.create(
 	refresh: function() {
 		var currentConversation = Frontend.chatController.get('currentConversation');
 		var users = currentConversation.get('userlist');
-		Frontend.userlistController.set('content', users);
+		Frontend.userlistController.set('content', SC.$A(users));
 	},
 	getUserInfo: function() {
 		var selection = Frontend.userlistController.get('selection');
