@@ -1,0 +1,11 @@
+How to run filetalk:
+
+	1. Install sproutcore and merb using ruby gems.
+
+	2. Navigate to backend folder. Type: merb.
+
+	3. Navigate to frontend folder. Type: sc-server
+
+	4. Open your web browser to: http://localhost:4020/frontend/
+
+	5. If all goes well, things should work.
