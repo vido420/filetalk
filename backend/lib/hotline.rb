@@ -510,15 +510,17 @@ class HotlineClient
     send_transaction(transaction, Transaction::ID_GETNEWS)
   end
 
-  def send_chat(message)
+  def send_chat(message, conversation_id=nil)
     transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_SEND_CHAT)
     transaction << TransactionObject.new(TransactionObject::MESSAGE, message.to_macroman)
+    transaction << TransactionObject.new(TransactionObject::CHATWINDOW, [conversation_id].pack('N')) unless conversation_id.nil?
     send_transaction(transaction)
   end
   
-  def send_emote(message)
+  def send_emote(message, conversation_id=nil)
     transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_SEND_CHAT)
     transaction << TransactionObject.new(TransactionObject::MESSAGE, message.to_macroman)
+    transaction << TransactionObject.new(TransactionObject::CHATWINDOW, [conversation_id].pack('N')) unless conversation_id.nil?
     transaction << TransactionObject.new(TransactionObject::PARAMETER, [1].pack('n'))
     send_transaction(transaction)
   end
