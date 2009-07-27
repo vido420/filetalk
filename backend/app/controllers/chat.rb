@@ -4,7 +4,23 @@ class Chat < Application
     hlc = Hotline::client_for(client_key)
     return not_logged_in if hlc.nil?
     return invalid_params if params['m'].nil?
-    hlc.send_chat(params['m'])
+    if params['cid'].nil?
+      hlc.send_chat(params['m'])
+    else
+      hlc.send_chat(params['m'], params['cid'].to_i)      
+    end
+    render 'OK'
+  end
+
+  def emote
+    hlc = Hotline::client_for(client_key)
+    return not_logged_in if hlc.nil?
+    return invalid_params if params['m'].nil?
+    if params['cid'].nil?
+      hlc.send_emote(params['m'])
+    else
+      hlc.send_emote(params['m'], params['cid'].to_i)      
+    end
     render 'OK'
   end
 
