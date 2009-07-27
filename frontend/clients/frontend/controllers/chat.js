@@ -39,10 +39,16 @@ Frontend.chatController = SC.Object.create(
 		var messageField = SC.page.getPath('chatView.chatSplitView.chatMain.chatForm.chatMessage');
 		var msg = messageField.get('value');
 		if (msg != null) {
+			var currentConversation = Frontend.chatController.get('currentConversation');
+			var params;
+			if (currentConversation && currentConversation.guid != "default")
+			 	params = { m: msg, cid: currentConversation.guid };
+			else
+				params = { m: msg };
 			var request = new Ajax.Request('/backend/chat', {
 				method: 'post',
 				requestHeaders: Frontend.appController.buildHeaders(),
-				parameters: { m: msg },
+				parameters: params,
 				evalJS: false,
 				evalJSON: false,
 				onSuccess: function(response) {
