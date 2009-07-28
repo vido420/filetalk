@@ -16,24 +16,21 @@ require('core');
 Frontend.chatController = SC.Object.create(
 /** @scope Frontend.chatController */ {
 	currentConversation: null,
-	appendChat: function(msg, cid) {
+	getConversation: function(cid) {
 		var conversation = Frontend.Conversation.find(cid ? cid : 'default');
 		if (!conversation) {
 			SC.Store.addRecord(Frontend.Conversation.create({ guid: cid, chatHTML: '', userlist: [] }));
 			conversation = Frontend.Conversation.find(cid);
 		}
+		return conversation;
+	},
+	appendChat: function(msg, cid) {
+		var conversation = Frontend.chatController.getConversation(cid);
 		conversation.set('chatHTML', conversation.get('chatHTML') + msg);
 		if (conversation == Frontend.chatController.get('currentConversation')) {
 			return true;
 		}
 		return false;
-	},
-	appendChatEverywhere: function(msg) {
-		var conversations = Frontend.Conversation.findAll();
-		for (var i = 0; i < conversations.length; i++) {
-			var c = conversations[i];
-			c.set('chatHTML', c.get('chatHTML') + msg);
-		}
 	},
 	updateChatView: function() {
 		var currentConversation = Frontend.chatController.get('currentConversation');
