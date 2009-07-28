@@ -147,7 +147,7 @@ Frontend.appController = SC.Object.create(
 												Frontend.appController.linkify(record.message.escapeHTML()),
 											'</div>',
 										'</div>'].join('');
-							if (Frontend.chatController.appendChat(msg)) {
+							if (Frontend.chatController.appendChatEverywhere(msg)) {
 								hadMessages = true;
 							}
 						} else if (record.recordType == 'user_info') {

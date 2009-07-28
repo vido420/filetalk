@@ -28,6 +28,13 @@ Frontend.chatController = SC.Object.create(
 		}
 		return false;
 	},
+	appendChatEverywhere: function(msg) {
+		var conversations = Frontend.Conversation.findAll();
+		for (var i = 0; i < conversations.length; i++) {
+			var c = conversations[i];
+			c.set('chatHTML', c.get('chatHTML') + msg);
+		}
+	},
 	updateChatView: function() {
 		var currentConversation = Frontend.chatController.get('currentConversation');
 		if (currentConversation) {
@@ -41,7 +48,7 @@ Frontend.chatController = SC.Object.create(
 		if (msg != null) {
 			var currentConversation = Frontend.chatController.get('currentConversation');
 			var params;
-			if (currentConversation && currentConversation.guid != "default")
+			if (currentConversation && currentConversation.guid != 'default')
 			 	params = { m: msg, cid: currentConversation.guid };
 			else
 				params = { m: msg };
