@@ -40,6 +40,14 @@ Frontend.appController = SC.Object.create(
 	getChatHistoryViewScrollView: function() {
 		return SC.page.getPath('chatView.chatSplitView.chatMain.chatHistoryScrollView');
 	},
+	playSound: function(name) {
+		var snd = document.getElementById('snd_'+name);
+		if (snd) {
+			snd.play();
+			return true;
+		}
+		return false;
+	},
 	poll: function() {
 		var request = new Ajax.Request('/backend/update', {
 			method: 'post',
@@ -62,6 +70,7 @@ Frontend.appController = SC.Object.create(
 							var conversation = Frontend.Conversation.find(record.conversationId);
 							if (user && !conversation) {
 								Frontend.chatController.showChatInvitationDialog(record.conversationId, user);
+								Frontend.appController.playSound('invite');
 							}
 						} else if (record.recordType == 'user') {
 							var user = Frontend.User.find(record.guid);
@@ -131,11 +140,14 @@ Frontend.appController = SC.Object.create(
 									break;
 								}
 							}
+							msg = msg.replace(new RegExp("\\n ", "g"), "<br />&nbsp;");
+							msg = msg.replace(new RegExp("\\n", "g"), "<br />");
 							msg = Frontend.appController.linkify(msg);
 							msg = '<div class="msg">' + msg + '</div>';
 							if (Frontend.chatController.appendChat(msg, record.conversationId)) {
 								hadMessages = true;
 							}
+							Frontend.appController.playSound('chat');
 						} else if (record.recordType == 'error') {
 							Frontend.errorMessageController.showErrorDialog("Server_Error".loc(), record.message, null);
 						} else if (record.recordType == 'pm') {
@@ -149,6 +161,7 @@ Frontend.appController = SC.Object.create(
 										'</div>'].join('');
 							Frontend.chatController.appendChatEverywhere(msg);
 							hadMessages = true;
+							Frontend.appController.playSound('pm');
 						} else if (record.recordType == 'user_info') {
 							Frontend.userlistController.showUserInfoDialog(record.message.escapeHTML());
 						} else if (record.recordType == 'news') {
