@@ -14,6 +14,9 @@ body {
     font: 12px "Lucida Grande", "Trebuchet MS", Verdana, sans-serif;
     color: #000;
 }
+audio {
+	display: none;
+}
 div#container {
     width: 744px;
     margin: 0px auto;
