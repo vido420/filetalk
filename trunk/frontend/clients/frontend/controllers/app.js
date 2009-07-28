@@ -240,7 +240,8 @@ Frontend.appController = SC.Object.create(
 	disconnectAction: function() {
 		Frontend.navController.set('tab', 'connection');
 		Frontend.appController.getChatHistoryView().set('innerHTML', '');
-		Frontend.User.removeAll();	
+		Frontend.User.removeAll();
+		Frontend.Conversation.removeAll();
 		Frontend.newsController.set('news', '');
 	},
 	disconnect: function() {
