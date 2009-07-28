@@ -187,7 +187,8 @@ Frontend.appController = SC.Object.create(
 					var conversations = Frontend.Conversation.findAll();
 					for (var cid in chatMessages) {
 						var c = Frontend.chatController.getConversation(cid);
-						c.set('chatHTML', c.get('chatHTML') + chatMessages[cid]);
+						c.chatHTML += chatMessages[cid];
+						c.propertyDidChange('chatHTML');
 						if (c == currentConversation) {
 							hadMessages = true;
 						}
