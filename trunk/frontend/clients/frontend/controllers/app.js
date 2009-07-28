@@ -61,8 +61,21 @@ Frontend.appController = SC.Object.create(
 				if (json) {
 					var users = Frontend.User.findAll();
 					var hadMessages = false;
-					for (var i = 0; i < json.length; i++) {
-						var record = json[i];
+					var chatMessages = {};
+					var appendChat = function(chatMessages, msg, cid) {
+						if (!cid) {
+							cid = 'default';
+						}
+						if (chatMessages[cid]) {
+							chatMessages[cid] += msg;
+							console.log("append msg: ", chatMessages[cid]);
+						} else {
+							Frontend.chatController.getConversation(cid);
+							chatMessages[cid] = msg;
+						}
+					}
+					for (var j = 0; j < json.length; j++) {
+						var record = json[j];
 						if (record.recordType == 'clear_userlist') {
 							Frontend.User.removeAll();
 						} else if (record.recordType == 'chat_invite') {
@@ -79,9 +92,7 @@ Frontend.appController = SC.Object.create(
 								user = Frontend.User.find(record.guid);
 								var msg = '<<< ' + record.nick + ' has joined >>>';
 								msg = '<div class="info">&nbsp;' + msg.escapeHTML() + '</div>';
-								if (Frontend.chatController.appendChat(msg)) {
-									hadMessages = true;
-								}
+								appendChat(chatMessages, msg);
 								var conversation = Frontend.Conversation.find('default');
 								conversation.get('userlist').push(user);
 							} else {
@@ -92,9 +103,7 @@ Frontend.appController = SC.Object.create(
 									for (var i = 0; i < conversations.length; i++) {
 										var c = conversations[i];
 										if (c.get('userlist').indexOf(user) != -1) {
-											if (Frontend.chatController.appendChat(msg, c.get('guid'))) {
-												hadMessages = true;
-											}
+											appendChat(chatMessages, msg, c.get('guid'));
 										}
 									}
 								}
@@ -105,9 +114,7 @@ Frontend.appController = SC.Object.create(
 							if (record.conversationId) {
 								var msg = '<<< ' + record.nick + ' has joined >>>';
 								msg = '<div class="info">&nbsp;' + msg.escapeHTML() + '</div>';
-								if (Frontend.chatController.appendChat(msg, record.conversationId)) {
-									hadMessages = true;
-								}
+								appendChat(chatMessages, msg, record.conversationId);
 								var conversation = Frontend.Conversation.find(record.conversationId);
 								conversation.get('userlist').push(user);
 							}
@@ -116,9 +123,7 @@ Frontend.appController = SC.Object.create(
 							if (user != null) {
 								var msg = '<<< ' + user.get('nick') + ' has left >>>';
 								msg = '<div class="info">&nbsp;' + msg.escapeHTML() + '</div>';
-								if (Frontend.chatController.appendChat(msg, record.conversationId)) {
-									hadMessages = true;
-								}
+								appendChat(chatMessages, msg, record.conversationId);
 								var cid = (record.conversationId ? record.conversationId : 'default');
 								var conversation = Frontend.Conversation.find(cid);
 								var userIndex = conversation.get('userlist').indexOf(user);
@@ -144,9 +149,7 @@ Frontend.appController = SC.Object.create(
 							msg = msg.replace(new RegExp("\\n", "g"), "<br />");
 							msg = Frontend.appController.linkify(msg);
 							msg = '<div class="msg">' + msg + '</div>';
-							if (Frontend.chatController.appendChat(msg, record.conversationId)) {
-								hadMessages = true;
-							}
+							appendChat(chatMessages, msg, record.conversationId);
 							Frontend.appController.playSound('chat');
 						} else if (record.recordType == 'error') {
 							Frontend.errorMessageController.showErrorDialog("Server_Error".loc(), record.message, null);
@@ -159,8 +162,11 @@ Frontend.appController = SC.Object.create(
 												Frontend.appController.linkify(record.message.escapeHTML()),
 											'</div>',
 										'</div>'].join('');
-							Frontend.chatController.appendChatEverywhere(msg);
-							hadMessages = true;
+										appendChat(chatMessages, msg, record.conversationId);
+							var conversations = Frontend.Conversation.findAll();
+							for (var i = 0; i < conversations.length; i++) {
+								appendChat(chatMessages, msg, conversations[i].guid);
+							}
 							Frontend.appController.playSound('pm');
 						} else if (record.recordType == 'user_info') {
 							Frontend.userlistController.showUserInfoDialog(record.message.escapeHTML());
@@ -177,6 +183,15 @@ Frontend.appController = SC.Object.create(
 						}
 					}
 					Frontend.userlistController.refresh();
+					var currentConversation = Frontend.chatController.get('currentConversation');
+					var conversations = Frontend.Conversation.findAll();
+					for (var cid in chatMessages) {
+						var c = Frontend.chatController.getConversation(cid);
+						c.set('chatHTML', c.get('chatHTML') + chatMessages[cid]);
+						if (c == currentConversation) {
+							hadMessages = true;
+						}
+					}
 					if (hadMessages) {
 						/* Scroll to the bottom or keep same position... */
 						var shouldScroll = false;
