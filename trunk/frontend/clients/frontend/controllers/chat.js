@@ -24,14 +24,6 @@ Frontend.chatController = SC.Object.create(
 		}
 		return conversation;
 	},
-	appendChat: function(msg, cid) {
-		var conversation = Frontend.chatController.getConversation(cid);
-		conversation.set('chatHTML', conversation.get('chatHTML') + msg);
-		if (conversation == Frontend.chatController.get('currentConversation')) {
-			return true;
-		}
-		return false;
-	},
 	updateChatView: function() {
 		var currentConversation = Frontend.chatController.get('currentConversation');
 		if (currentConversation) {
