@@ -68,7 +68,6 @@ Frontend.appController = SC.Object.create(
 						}
 						if (chatMessages[cid]) {
 							chatMessages[cid] += msg;
-							console.log("append msg: ", chatMessages[cid]);
 						} else {
 							Frontend.chatController.getConversation(cid);
 							chatMessages[cid] = msg;
@@ -162,7 +161,6 @@ Frontend.appController = SC.Object.create(
 												Frontend.appController.linkify(record.message.escapeHTML()),
 											'</div>',
 										'</div>'].join('');
-										appendChat(chatMessages, msg, record.conversationId);
 							var conversations = Frontend.Conversation.findAll();
 							for (var i = 0; i < conversations.length; i++) {
 								appendChat(chatMessages, msg, conversations[i].guid);
