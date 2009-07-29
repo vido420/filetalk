@@ -191,7 +191,7 @@ Frontend.appController = SC.Object.create(
 							hadMessages = true;
 						}
 					}
-					if (hadMessages) {
+					if (hadMessages && Frontend.navController.get('tab') == 'chat') {
 						/* Scroll to the bottom or keep same position... */
 						var shouldScroll = false;
 						var scrollView = Frontend.appController.getChatHistoryViewScrollView().rootElement;
@@ -214,7 +214,9 @@ Frontend.appController = SC.Object.create(
 							} else if (scrollView.offsetHeight > 0) {
 								currentHeight = scrollView.offsetHeight;
 							}
-				        	scrollView.scrollTop = currentHeight;
+							Frontend.chatController.set('currentScrollPos', currentHeight);
+						} else {
+							Frontend.chatController.set('currentScrollPos', scrollView.scrollTop);
 						}
 					}
 				}
@@ -238,7 +240,7 @@ Frontend.appController = SC.Object.create(
 		});	
 	},
 	disconnectAction: function() {
-		Frontend.navController.set('tab', 'connection');
+		Frontend.navController.setTab('connection');
 		Frontend.appController.getChatHistoryView().set('innerHTML', '');
 		Frontend.User.removeAll();
 		Frontend.Conversation.removeAll();

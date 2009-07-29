@@ -16,6 +16,9 @@ require('core');
 Frontend.navController = SC.Object.create(
 /** @scope Frontend.navController */ {
 	tab: 'connection',
+	setTab: function(val) {
+		Frontend.navController.set('tab', val);
+	},
 	tabObserver: function() {
 		var tab = this.get('tab');
 		SC.page.get('navigationView').set('value', tab);
@@ -23,6 +26,8 @@ Frontend.navController = SC.Object.create(
 			SC.page.get('contentView').set('content', SC.page.get('chatView'));
 			if (Frontend.appController.get('isPolling') == false) {
 				Frontend.appController.startPolling();
+			} else {
+				Frontend.chatController.propertyDidChange('currentConversation');
 			}
 		} else if (tab == 'news') {
 			SC.page.get('contentView').set('content', SC.page.get('newsView'));			
@@ -37,7 +42,7 @@ Frontend.navController = SC.Object.create(
 				"NotLoggedIn_Message".loc(), null);
 		} else if (currentTab == 'chat') {
 		} else {
-			Frontend.navController.set('tab', 'chat');
+			Frontend.navController.setTab('chat');
 		}		
 	},
 	openPrivate: function() {
@@ -54,7 +59,6 @@ Frontend.navController = SC.Object.create(
 			}
 		}
 		Frontend.userlistController.refresh();
-		Frontend.chatController.updateChatView();
 	},
 	openFiles: function() {
 		Frontend.appController.notImplemented();		
@@ -67,7 +71,7 @@ Frontend.navController = SC.Object.create(
 		} else if (currentTab == 'news') {
 		} else {
 			Frontend.newsController.requestNews();
-			Frontend.navController.set('tab', 'news');
+			Frontend.navController.setTab('news');
 		}
 	},
 }) ;

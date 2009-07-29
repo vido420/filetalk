@@ -14,7 +14,7 @@ require('core');
 */
 Frontend.Conversation = SC.Record.extend(
 /** @scope Frontend.Conversation.prototype */ {
-	scrollOffset: 0,
+	scrollPos: 0,
 	chatHTML: '&nbsp',
 	userlist: [],
 }) ;
