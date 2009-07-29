@@ -26,7 +26,7 @@ Frontend.loginController = SC.Object.create(
 		loginPassword.rootElement.blur();
 		Frontend.appController.set('clientKey', null);
 		SC.page.get('loginProgresDialog').set('isVisible', true);
-		var request = new Ajax.Request('/backend/login', {
+		var request = new Ajax.Request(Backend.urlFor('/login'), {
 			method: 'POST',
 			parameters: { name: username, pass: password },
 			evalJS: false,

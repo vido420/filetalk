@@ -53,7 +53,7 @@ Frontend.chatController = SC.Object.create(
 			 	params = { m: msg, cid: currentConversation.guid };
 			else
 				params = { m: msg };
-			var request = new Ajax.Request('/backend/chat', {
+			var request = new Ajax.Request(Backend.urlFor('/chat'), {
 				method: 'post',
 				requestHeaders: Frontend.appController.buildHeaders(),
 				parameters: params,
@@ -75,7 +75,7 @@ Frontend.chatController = SC.Object.create(
 			// TODO: this limitation shouldn't exist
 			alert('You may only invite a single user to private chat.')
 		} else {
-			var request = new Ajax.Request('/backend/pchat/start', {
+			var request = new Ajax.Request(Backend.urlFor('/pchat/start'), {
 				method: 'post',
 				requestHeaders: Frontend.appController.buildHeaders(),
 				parameters: { user: selection[0].guid },
@@ -113,7 +113,7 @@ Frontend.chatController = SC.Object.create(
 	},
 	acceptChatInvitation: function() {
 		var invitedToConversationId = Frontend.chatController.get('invitedToConversationId');
-		var request = new Ajax.Request('/backend/pchat/accept', {
+		var request = new Ajax.Request(Backend.urlFor('/pchat/accept'), {
 			method: 'post',
 			requestHeaders: Frontend.appController.buildHeaders(),
 			parameters: { cid: invitedToConversationId },
@@ -128,7 +128,7 @@ Frontend.chatController = SC.Object.create(
 	},
 	refuseChatInvitation: function() {
 		var invitedToConversationId = Frontend.chatController.get('invitedToConversationId');
-		var request = new Ajax.Request('/backend/pchat/refuse', {
+		var request = new Ajax.Request(Backend.urlFor('/pchat/refuse'), {
 			method: 'post',
 			requestHeaders: Frontend.appController.buildHeaders(),
 			parameters: { cid: invitedToConversationId },
@@ -154,7 +154,7 @@ Frontend.chatController = SC.Object.create(
 	changeNick: function() {
 		var nick = SC.page.getPath('nameDialog.nameForm.nameField.value');
 		if (nick != null) {
-			var request = new Ajax.Request('/backend/chat/set_nick', {
+			var request = new Ajax.Request(Backend.urlFor('/chat/set_nick'), {
 				method: 'post',
 				requestHeaders: Frontend.appController.buildHeaders(),
 				parameters: { n: nick },

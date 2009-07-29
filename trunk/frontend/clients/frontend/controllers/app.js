@@ -49,7 +49,7 @@ Frontend.appController = SC.Object.create(
 		return false;
 	},
 	poll: function() {
-		var request = new Ajax.Request('/backend/update', {
+		var request = new Ajax.Request(Backend.urlFor('/update'), {
 			method: 'post',
 			requestHeaders: Frontend.appController.buildHeaders(),
 			evalJS: false,
@@ -250,7 +250,7 @@ Frontend.appController = SC.Object.create(
 		var confirmed = confirm("Are you sure you want to disconnect?");
 		if (!confirmed) { return; }
 		Frontend.appController.set('isPolling', false);
-		var request = new Ajax.Request('/backend/close', {
+		var request = new Ajax.Request(Backend.urlFor('/close'), {
 			method: 'get',
 			requestHeaders: Frontend.appController.buildHeaders(),
 			evalJS: false,

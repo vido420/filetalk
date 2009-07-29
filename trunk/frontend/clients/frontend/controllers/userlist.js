@@ -27,7 +27,7 @@ Frontend.userlistController = SC.ArrayController.create(
 		} else if (selection.length > 1) {
 			alert('You may only get information about one user at a time.')
 		} else {
-			var request = new Ajax.Request('/backend/user/info', {
+			var request = new Ajax.Request(Backend.urlFor('/user/info'), {
 				method: 'post',
 				requestHeaders: Frontend.appController.buildHeaders(),
 				parameters: { u: selection[0].get('guid') },
