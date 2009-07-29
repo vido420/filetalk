@@ -16,7 +16,7 @@ require('core');
 Frontend.newsController = SC.Object.create(
 /** @scope Frontend.newsController */ {
 	requestNews: function() {
-		var request = new Ajax.Request('/backend/news', {
+		var request = new Ajax.Request(Backend.urlFor('/news'), {
 			method: 'get',
 			requestHeaders: Frontend.appController.buildHeaders(),
 			evalJS: false,
