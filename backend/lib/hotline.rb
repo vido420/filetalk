@@ -186,6 +186,7 @@ class HotlineClient
     @event_queue_empty_cond = @event_queue.new_cond
     @thread = nil
     @last_update = Time.now.to_i
+    @logging_in = false
   end
   
   def connect
@@ -482,21 +483,25 @@ class HotlineClient
       @tasks.synchronize { @task_cond.signal } if should_signal
     end
   rescue Exception => e
-    puts e.message
-    puts e.backtrace.inspect
+    unless @logging_in
+      puts e.message
+      e.backtrace.each { |line| puts line }
+    end
     @socket.close if @socket
     @socket = nil
+    @tasks.synchronize { @task_cond.signal }
   end
 
   def login(username, password)
     @nick = username
+    @logging_in = true
     transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_LOGIN)
     transaction << TransactionObject.new(TransactionObject::LOGIN, username.encode)
     transaction << TransactionObject.new(TransactionObject::PASSWORD, password.encode)
     transaction << TransactionObject.new(TransactionObject::VERSION, [150].pack('n'))
     login_task_number = send_transaction(transaction, Transaction::ID_LOGIN)
-    @tasks.synchronize { @task_cond.wait_while { !@tasks[login_task_number].nil? } }
-    puts "logged_in = #{connected?}"
+    @tasks.synchronize { @task_cond.wait_while { !@tasks[login_task_number].nil? and connected? } }
+    @logging_in = false
     return connected?
   end
 
