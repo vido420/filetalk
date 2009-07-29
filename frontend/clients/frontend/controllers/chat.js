@@ -29,8 +29,20 @@ Frontend.chatController = SC.Object.create(
 		if (currentConversation) {
 			var chatView = Frontend.appController.getChatHistoryView();
 			chatView.set('innerHTML', currentConversation.get('chatHTML'));
+			console.log("Setting currentScrollPos to ", currentConversation.get('scrollPos'));
+			this.set('currentScrollPos', currentConversation.get('scrollPos'));
 		}
 	}.observes('currentConversation'),
+	currentScrollPos: 0,
+	updateScrollPos: function() {
+		var currentScrollPos = this.get('currentScrollPos');
+		var scrollView = Frontend.appController.getChatHistoryViewScrollView();
+		scrollView.rootElement.scrollTop = currentScrollPos;
+		var currentConversation = Frontend.chatController.get('currentConversation');
+		if (currentConversation) {
+			currentConversation.set('scrollPos', currentScrollPos);
+		}
+	}.observes('currentScrollPos'),
 	send: function() {
 		var messageField = SC.page.getPath('chatView.chatSplitView.chatMain.chatForm.chatMessage');
 		var msg = messageField.get('value');
