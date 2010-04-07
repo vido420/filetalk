@@ -492,12 +492,12 @@ class HotlineClient
     @tasks.synchronize { @task_cond.signal }
   end
 
-  def login(username, password)
+  def login(username = nil, password = nil)
     @nick = username
     @logging_in = true
     transaction = Transaction.new(Transaction::REQUEST, Transaction::ID_LOGIN)
-    transaction << TransactionObject.new(TransactionObject::LOGIN, username.encode)
-    transaction << TransactionObject.new(TransactionObject::PASSWORD, password.encode)
+    transaction << TransactionObject.new(TransactionObject::LOGIN, username.encode) unless username.nil?
+    transaction << TransactionObject.new(TransactionObject::PASSWORD, password.encode) unless password.nil?
     transaction << TransactionObject.new(TransactionObject::VERSION, [150].pack('n'))
     login_task_number = send_transaction(transaction, Transaction::ID_LOGIN)
     @tasks.synchronize { @task_cond.wait_while { !@tasks[login_task_number].nil? and connected? } }
